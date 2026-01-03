@@ -1,0 +1,382 @@
+/* Feature Grid - Exact replica of reference */
+
+.feature-grid-wrapper {
+  --grid-padding: 40px;
+  width: 100%;
+  max-width: 1200px;
+  margin: var(--spacing-xl) auto;
+  position: relative;
+  overflow: visible;
+  padding: 0 var(--grid-padding);
+}
+
+/* Fading overlay on left edge */
+.feature-grid-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: calc(-1 * var(--grid-padding));
+  width: 120px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Fading overlay on right edge */
+.feature-grid-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  right: calc(-1 * var(--grid-padding));
+  width: 120px;
+  background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Top and bottom grid lines */
+.feature-grid-line {
+  position: absolute;
+  left: var(--grid-padding);
+  right: var(--grid-padding);
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.08) 15%,
+    rgba(0, 0, 0, 0.08) 85%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 5;
+}
+
+.feature-grid-line-top {
+  top: 0;
+}
+
+.feature-grid-line-bottom {
+  bottom: 0;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  aspect-ratio: 10 / 6;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+/* Small feature cells - no background, no padding, no rounded corners */
+.feature-cell-small {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* Vertical line on right of cell */
+.feature-cell-small::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -20px;
+  bottom: -20px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.08) 15%,
+    rgba(0, 0, 0, 0.08) 85%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Horizontal line on bottom of cell */
+.feature-cell-small::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -20px;
+  right: -20px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.08) 15%,
+    rgba(0, 0, 0, 0.08) 85%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Hide right line on last column */
+.feature-cell-small[data-col="10"]::after {
+  display: none;
+}
+
+/* Hide bottom line on last row */
+.feature-cell-small[data-row="6"]::before {
+  display: none;
+}
+
+/* Cells adjacent to center block - solid lines (no fade toward center) */
+/* Column 3, rows 2-5: right line should be solid */
+.feature-cell-small[data-col="3"][data-row="2"]::after,
+.feature-cell-small[data-col="3"][data-row="3"]::after,
+.feature-cell-small[data-col="3"][data-row="4"]::after,
+.feature-cell-small[data-col="3"][data-row="5"]::after {
+  background: rgba(0, 0, 0, 0.08);
+  top: 0;
+  bottom: 0;
+}
+
+/* Column 8, rows 2-5: left border via cell styling (needs extra element) */
+.feature-cell-small[data-col="8"][data-row="2"],
+.feature-cell-small[data-col="8"][data-row="3"],
+.feature-cell-small[data-col="8"][data-row="4"],
+.feature-cell-small[data-col="8"][data-row="5"] {
+  box-shadow: -1px 0 0 0 rgba(0, 0, 0, 0.08);
+}
+
+/* Row 1, cols 4-7: bottom line should be solid */
+.feature-cell-small[data-row="1"][data-col="4"]::before,
+.feature-cell-small[data-row="1"][data-col="5"]::before,
+.feature-cell-small[data-row="1"][data-col="6"]::before,
+.feature-cell-small[data-row="1"][data-col="7"]::before {
+  background: rgba(0, 0, 0, 0.08);
+  left: 0;
+  right: 0;
+}
+
+/* Row 6, cols 4-7: top border via box-shadow */
+.feature-cell-small[data-row="6"][data-col="4"],
+.feature-cell-small[data-row="6"][data-col="5"],
+.feature-cell-small[data-row="6"][data-col="6"],
+.feature-cell-small[data-row="6"][data-col="7"] {
+  box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.45;
+}
+
+.feature-text {
+  font-size: 14px;
+  transform: scale(0.9);
+  font-weight: 400;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Large feature cells - 2x2 */
+.feature-cell-large {
+  cursor: pointer;
+  perspective: 1000px;
+  position: relative;
+}
+
+/* Solid vertical line on right of large cells */
+.feature-cell-large::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  z-index: 5;
+}
+
+/* Solid horizontal line on bottom of large cells */
+.feature-cell-large::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+  z-index: 5;
+}
+
+/* Hide right line on rightmost large cells */
+.feature-cell-large[data-col="6"]::after {
+  display: none;
+}
+
+/* Hide bottom line on bottom large cells */
+.feature-cell-large[data-row="4"]::before {
+  display: none;
+}
+
+.feature-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+
+.feature-cell-large.flipped .feature-card-inner {
+  transform: rotateY(180deg);
+}
+
+.feature-card-front,
+.feature-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.feature-card-front {
+  background-size: cover;
+  background-position: center top;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Label at bottom - no background bar */
+.feature-large-label {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.feature-large-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-large-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.feature-large-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Back of card */
+.feature-card-back {
+  background: var(--color-background);
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.feature-back-text {
+  font-size: 12px !important;
+  text-align: center;
+  line-height: 1.3 !important;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .feature-grid-wrapper {
+    --grid-padding: 20px;
+  }
+
+  .feature-grid-wrapper::before,
+  .feature-grid-wrapper::after {
+    width: 80px;
+  }
+
+  .feature-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .feature-text {
+    font-size: 9px;
+  }
+
+  .feature-large-text {
+    font-size: 16px;
+  }
+
+  .feature-large-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .feature-card-front {
+    padding-bottom: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .feature-grid-wrapper {
+    --grid-padding: 10px;
+  }
+
+  .feature-grid-wrapper::before,
+  .feature-grid-wrapper::after {
+    width: 60px;
+  }
+
+  .feature-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .feature-text {
+    font-size: 7px;
+  }
+
+  .feature-large-text {
+    font-size: 12px;
+  }
+
+  .feature-large-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .feature-large-label {
+    gap: 4px;
+  }
+
+  .feature-card-front {
+    padding-bottom: 8px;
+  }
+
+  .feature-back-text {
+    font-size: 10px;
+    padding: 8px;
+  }
+}

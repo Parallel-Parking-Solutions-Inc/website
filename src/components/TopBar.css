@@ -40,7 +40,6 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  transition: background var(--transition-fast);
 }
 
 .topbar-sidebar-toggle:hover {
@@ -108,7 +107,7 @@
 }
 
 .topbar-search-toggle:hover {
-  background: var(--color-background-tertiary);
+  background: none;
   color: var(--color-text-primary);
 }
 
@@ -288,15 +287,16 @@
 /* Get App Button - fades out to the right */
 .topbar-btn-get-app {
   background: transparent;
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary) !important;
   border: 1px solid var(--color-border);
   opacity: 1;
   transform: translateX(0);
   margin-right: var(--spacing-sm);
-  transition: opacity 0.3s ease, transform 0.3s ease, width 0.3s ease, padding 0.3s ease, margin 0.3s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease, width 0.3s ease, padding 0.3s ease, margin 0.3s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .topbar-btn-get-app:hover {
+  color: var(--color-text-primary) !important;
   background: var(--color-background-secondary);
   text-decoration: none;
 }

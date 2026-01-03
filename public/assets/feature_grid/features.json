@@ -1,0 +1,79 @@
+{
+  "smallFeatures": [
+    { "icon": "alpr.svg", "text": "ALPR" },
+    { "icon": "live_count.svg", "text": "Live Count" },
+    { "icon": "uptime.svg", "text": "Uptime" },
+    { "icon": "realtime.svg", "text": "Realtime" },
+    { "icon": "low_latency.svg", "text": "Low Latency" },
+    { "icon": "cloud_ops.svg", "text": "Cloud Ops" },
+    { "icon": "edge_compute.svg", "text": "Edge Compute" },
+    { "icon": "secured.svg", "text": "Secured" },
+    { "icon": "ai_security.svg", "text": "AI Security" },
+    { "icon": "oauth.svg", "text": "OAuth" },
+
+    { "icon": "lot_dashboard.svg", "text": "Lot Dashboard" },
+    { "icon": "mapper.svg", "text": "Mapper" },
+    { "icon": "organizations.svg", "text": "Organizations" },
+    { "icon": "registry.svg", "text": "Registry" },
+    { "icon": "violations.svg", "text": "Violatons" },
+    { "icon": "users.svg", "text": "Users" },
+    { "icon": "roles.svg", "text": "Roles" },
+    { "icon": "lot_selector.svg", "text": "Lot Selector" },
+    { "icon": "darkmode.svg", "text": "Dark Mode" },
+    { "icon": "mobile.svg", "text": "Mobile" },
+
+    { "icon": "notifications.svg", "text": "Notifications" },
+    { "icon": "alerts.svg", "text": "Alerts" },
+    { "icon": "ota_updates.svg", "text": "OTA Updates" },
+    { "icon": "downloads.svg", "text": "Downloads" },
+    { "icon": "validation.svg", "text": "Validation" },
+    { "icon": "ticket_printer.svg", "text": "Ticket Print" },
+    { "icon": "qr_codes.svg", "text": "QR Codes" },
+    { "icon": "xl_integration.svg", "text": "XL Integration" },
+    { "icon": "multi_select.svg", "text": "Multi-Select" },
+    { "icon": "force_end.svg", "text": "Force End" },
+
+    { "icon": "revenue.svg", "text": "Revenue" },
+    { "icon": "occupancy.svg", "text": "Occupancy" },
+    { "icon": "emissions.svg", "text": "Emissions" },
+    { "icon": "dwell.svg", "text": "Dwell" },
+    { "icon": "segments.svg", "text": "Segments" },
+    { "icon": "history.svg", "text": "History" },
+    { "icon": "metrics.svg", "text": "Metrics" },
+    { "icon": "charts.svg", "text": "Charts" },
+    { "icon": "sorting.svg", "text": "Sorting" },
+    { "icon": "ai_predict.svg", "text": "AI Predict" },
+
+    { "icon": "pricing.svg", "text": "Pricing" },
+    { "icon": "advanced.svg", "text": "Advanced" },
+    { "icon": "toggles.svg", "text": "Toggles" },
+    { "icon": "sessions.svg", "text": "Sessions" },
+    { "icon": "ai_chat.svg", "text": "AI Chat" }
+  ],
+  "largeFeatures": [
+    {
+      "icon": "auto_billing.svg",
+      "text": "Auto Billing",
+      "background": "auto_billing_bg.png",
+      "backText": "Let Parallel handle the rest. We automatically calculate sessions and costs, so you never have to worry about billing again."
+    },
+    {
+      "icon": "auto_enforce.svg",
+      "text": "Auto Enforce",
+      "background": "auto_enforcement_bg.png",
+      "backText": "Saves countless hours for lot operators managing and marking violators. Meanwhile, true violators are handled automatically."
+    },
+    {
+      "icon": "ai_agents.svg",
+      "text": "AI Agents",
+      "background": "ai_agents_bg.png",
+      "backText": "Tell Parallel what to do. Add this list of names to the registry, done. Change my prices, easy. It couldn't be simpler."
+    },
+    {
+      "icon": "data_analytics.svg",
+      "text": "Data Analytics",
+      "background": "data_analytics_bg.png",
+      "backText": "View Revenue, Occupancy on any day, Segmentation of Return/New visitors, dwell time, view your EV emissions. AI predicts days to come for you."
+    }
+  ]
+}

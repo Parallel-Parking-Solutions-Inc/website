@@ -3,6 +3,7 @@ import './Home.css';
 import LoadingLogo from '../components/LoadingLogo';
 import YoutubeVideoModal from '../components/YoutubeVideoModal';
 import TrustBadges from '../components/TrustBadges';
+import FeatureGrid from '../components/FeatureGrid';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 
 const Home: React.FC = () => {
@@ -157,6 +158,7 @@ const Home: React.FC = () => {
           {/* Section 5: Feature Grid */}
           <section className="home-section home-section-centered" id="feature-grid">
             <h2>Everything you need to manage your lot. All powered by AI.</h2>
+            <FeatureGrid />
           </section>
 
           {/* Section 6: Operator Portal */}
