@@ -19,49 +19,6 @@ interface SearchResult {
   priority?: number; // Higher priority = shown first
 }
 
-const SEARCHABLE_ITEMS: SearchResult[] = [
-  // Priority 1: Pages (highest priority)
-  { id: 'home', label: 'Home', type: 'page', path: '/', priority: 100, keywords: ['main', 'start', 'landing'] },
-  { id: 'contact', label: 'Contact Us', type: 'page', path: '/contact', priority: 100, keywords: ['email', 'phone', 'support', 'help', 'reach', 'message'] },
-  { id: 'careers', label: 'Careers', type: 'page', path: '/careers', priority: 100, keywords: ['jobs', 'hiring', 'work', 'employment', 'openings', 'join', 'team'] },
-  { id: 'legal', label: 'Legal', type: 'page', path: '/legal', priority: 100, keywords: ['terms', 'privacy', 'policy', 'documents'] },
-
-  // Priority 2: Actions/Buttons
-  { id: 'get-app', label: 'Get the App', type: 'action', path: 'https://app.parkwithparallel.com', priority: 90, keywords: ['download', 'install', 'mobile', 'phone', 'ios', 'android'] },
-  { id: 'pay-now', label: 'Pay for Parking', type: 'action', path: 'https://pay.parkwithparallel.com', priority: 90, keywords: ['payment', 'pay', 'parking', 'ticket', 'fee'] },
-  { id: 'request-demo', label: 'Request a Demo', type: 'action', path: '/contact', priority: 85, keywords: ['demo', 'trial', 'test', 'try', 'see'] },
-  { id: 'operator-login', label: 'Operator Portal Login', type: 'action', path: 'https://operator.parkwithparallel.com', priority: 85, keywords: ['login', 'sign in', 'portal', 'dashboard', 'manage'] },
-
-  // Priority 3: Home Page Sections
-  { id: 'mobile-app', label: 'Mobile App', type: 'section', path: '/', section: 'app-hero', priority: 80, keywords: ['app', 'mobile', 'phone', 'download', 'parking app'] },
-  { id: 'operator-portal', label: 'Operator Portal', type: 'section', path: '/', section: 'operator-portal', priority: 80, keywords: ['operator', 'portal', 'management', 'dashboard', 'analytics', 'manage'] },
-  { id: 'trust-badges', label: 'Trusted Partners', type: 'section', path: '/', section: 'trust-badges', priority: 70, keywords: ['partners', 'trusted', 'clients', 'customers'] },
-  { id: 'demo-video', label: 'Demo Video', type: 'section', path: '/', section: 'demo-video', priority: 70, keywords: ['video', 'demo', 'watch', 'see'] },
-  { id: 'tutorials', label: 'Operator Tutorials', type: 'section', path: '/', section: 'operator-portal', priority: 70, keywords: ['tutorial', 'guide', 'how to', 'learn', 'training'] },
-
-  // Priority 4: Legal Pages
-  { id: 'app-terms', label: 'App Terms of Service', type: 'page', path: '/legal/app/terms-of-service', priority: 60, keywords: ['terms', 'service', 'app', 'conditions', 'agreement'] },
-  { id: 'app-privacy', label: 'App Privacy Policy', type: 'page', path: '/legal/app/privacy-policy', priority: 60, keywords: ['privacy', 'data', 'app', 'personal', 'information', 'gdpr'] },
-  { id: 'operator-terms', label: 'Operator Terms of Service', type: 'page', path: '/legal/operator/terms-of-service', priority: 60, keywords: ['terms', 'service', 'operator', 'conditions', 'agreement'] },
-  { id: 'operator-privacy', label: 'Operator Privacy Policy', type: 'page', path: '/legal/operator/privacy-policy', priority: 60, keywords: ['privacy', 'data', 'operator', 'personal', 'information', 'alpr', 'license plate'] },
-
-  // Priority 5: Content from pages (lower priority, shown as fallback)
-  { id: 'content-parking', label: 'Smart Parking Solutions', type: 'content', path: '/', section: 'hero', priority: 50, keywords: ['parking', 'smart', 'solution', 'technology', 'ai', 'automated'] },
-  { id: 'content-setup', label: 'Easy Setup', type: 'content', path: '/', section: 'setup', priority: 50, keywords: ['setup', 'install', 'configure', 'quick', 'easy', 'minutes'] },
-  { id: 'content-features', label: 'Platform Features', type: 'content', path: '/', section: 'feature-grid', priority: 50, keywords: ['features', 'capabilities', 'tools', 'analytics', 'reports'] },
-  { id: 'content-ecosystem', label: 'Parking Ecosystem', type: 'content', path: '/', section: 'ecosystem', priority: 50, keywords: ['ecosystem', 'platform', 'integration', 'unified'] },
-
-  // Career-related content
-  { id: 'job-mobile', label: 'Mobile Engineer Position', type: 'content', path: '/careers', priority: 40, keywords: ['mobile', 'engineer', 'react native', 'ios', 'android', 'developer', 'job'] },
-  { id: 'job-devops', label: 'DevOps Engineer Position', type: 'content', path: '/careers', priority: 40, keywords: ['devops', 'engineer', 'aws', 'infrastructure', 'deployment', 'job'] },
-  { id: 'job-marketing', label: 'Marketing Manager Position', type: 'content', path: '/careers', priority: 40, keywords: ['marketing', 'manager', 'strategy', 'content', 'job'] },
-  { id: 'job-business', label: 'Business Development Position', type: 'content', path: '/careers', priority: 40, keywords: ['business', 'development', 'sales', 'partnerships', 'job'] },
-
-  // Contact-related content
-  { id: 'content-email', label: 'Email Support', type: 'content', path: '/contact', priority: 40, keywords: ['email', 'support', 'info@parkwithparallel.com', 'contact'] },
-  { id: 'content-delete-data', label: 'Delete My Data', type: 'content', path: '/legal', priority: 40, keywords: ['delete', 'data', 'remove', 'gdpr', 'privacy', 'request'] },
-];
-
 const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -74,6 +31,7 @@ const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) 
   const [showPayDropdown, setShowPayDropdown] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(-1);
   const [scrollPhase, setScrollPhase] = useState<'idle' | 'hide' | 'show'>('idle');
+  const [searchableItems, setSearchableItems] = useState<SearchResult[]>([]);
 
   // Refs
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -123,6 +81,32 @@ const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Load search results from JSON asset
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSearchResults = async () => {
+      try {
+        const response = await fetch('/assets/search_results.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load search results (${response.status})`);
+        }
+        const data: SearchResult[] = await response.json();
+        if (isMounted) {
+          setSearchableItems(data);
+        }
+      } catch (error) {
+        console.error('Error loading search results:', error);
+      }
+    };
+
+    loadSearchResults();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Handle search icon click
   const handleSearchIconClick = () => {
     setIsSearchExpanded(true);
@@ -137,7 +121,7 @@ const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) 
     const query = searchQuery.toLowerCase();
 
     // Score each item based on match quality
-    const scoredItems = SEARCHABLE_ITEMS.map((item) => {
+    const scoredItems = searchableItems.map((item) => {
       let score = 0;
       const labelLower = item.label.toLowerCase();
 
@@ -180,7 +164,7 @@ const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) 
       .sort((a, b) => b.score - a.score)
       .map((s) => s.item)
       .slice(0, 8); // Show up to 8 results
-  }, [searchQuery]);
+  }, [searchQuery, searchableItems]);
 
   // Reset selected index when results change
   useEffect(() => {
