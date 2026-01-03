@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import TopBar from './components/TopBar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
@@ -17,10 +18,21 @@ import TeamMember from './pages/TeamMember';
 function AppComponent() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  const handleSidebarToggle = () => {
+    setIsSidebarCollapsed((prev) => !prev);
+  };
+
   return (
     <Router>
       <div className="app">
-        <Sidebar onToggle={(collapsed) => setIsSidebarCollapsed(collapsed)} />
+        <TopBar
+          onSidebarToggle={handleSidebarToggle}
+          isSidebarCollapsed={isSidebarCollapsed}
+        />
+        <Sidebar
+          isCollapsed={isSidebarCollapsed}
+          onCollapsedChange={setIsSidebarCollapsed}
+        />
         <div className={`main-content ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
           <main className="main-content-inner">
             <Routes>

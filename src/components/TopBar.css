@@ -1,0 +1,523 @@
+/* TopBar Container */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height, 60px);
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-lg);
+  z-index: 1100;
+  transition: background var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.topbar.scrolled {
+  background: rgba(255, 255, 255, 1.0);
+}
+
+/* Left Section - Logo & Toggle */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 150px;
+}
+
+.topbar-logo {
+  height: 20px;
+  width: auto;
+}
+
+.topbar-sidebar-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.topbar-sidebar-toggle:hover {
+  background: none;
+}
+
+.topbar-toggle-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast), filter var(--transition-fast);
+}
+
+.topbar-sidebar-toggle:hover .topbar-toggle-icon {
+  opacity: 1;
+  filter: brightness(0);
+}
+
+/* Search Container - Collapsible */
+.topbar-search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-sm);
+  transition: opacity 0.3s ease, transform 0.3s ease, width 0.3s ease, margin-right 0.3s ease, left 0.35s ease, padding 0.35s ease;
+  --sidebar-offset: 0px;
+}
+
+.topbar-search-container.expanded {
+  transition: opacity 0.2s ease, left 0.35s ease, transform 0.35s ease, width 0.35s ease, padding 0.35s ease;
+}
+
+.topbar-search-container.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  width: 0;
+  margin-right: 0;
+  overflow: hidden;
+}
+
+.topbar-search-container.hidden.scroll-hide {
+  animation: topbarSearchFadeOut 0.2s ease forwards;
+  width: auto;
+  margin-right: var(--spacing-sm);
+}
+
+.topbar-search-container.scroll-show {
+  animation: topbarSearchFadeIn 0.5s ease forwards;
+}
+
+.topbar-search-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.topbar-search-toggle:hover {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+}
+
+.topbar-search-container.expanded .topbar-search-toggle {
+  position: absolute;
+  left: var(--spacing-lg);
+  top: 50%;
+  transform: translate(5px, -50%);
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.topbar-search-toggle svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.topbar-search {
+  position: absolute;
+  right: 0;
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, opacity 0.25s ease;
+}
+
+.topbar-search-container.expanded .topbar-search {
+  position: relative;
+  width: 100%;
+  opacity: 1;
+}
+
+.topbar-search-container.expanded {
+  position: fixed;
+  left: calc(50% + (var(--sidebar-offset) / 2));
+  transform: translateX(-50%);
+  top: 0;
+  height: var(--topbar-height, 60px);
+  padding: 0 var(--spacing-lg);
+  width: min(640px, calc(100vw - var(--spacing-lg) * 2 - var(--sidebar-offset)));
+  max-width: 720px;
+  z-index: 1201;
+  align-items: center;
+  margin-right: 0;
+  opacity: 1;
+  right: auto;
+}
+
+.topbar-search-input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  background: var(--color-background-secondary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.topbar-search-input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.topbar-search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: none;
+  background: var(--color-background);
+}
+
+.topbar-search-dropdown {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 0;
+  right: 0;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px var(--color-overlay-dark);
+  padding: var(--spacing-sm);
+  overflow: hidden;
+  z-index: 1200;
+  animation: searchDropdownIn 0.2s ease;
+}
+
+@keyframes searchDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.topbar-search-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family);
+  transition: background var(--transition-fast);
+}
+
+.topbar-search-result:hover,
+.topbar-search-result.selected {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.search-result-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.search-result-type {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+  padding: 2px 8px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-sm);
+}
+
+/* Different colors for different result types */
+.search-result-type[data-type="page"] {
+  background: var(--color-primary-lighter);
+  color: var(--color-primary);
+}
+
+.search-result-type[data-type="action"] {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.search-result-type[data-type="section"] {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-muted);
+}
+ 
+.search-result-type[data-type="content"] {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-muted);
+}
+
+/* Right Section - Buttons */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.topbar-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  font-family: var(--font-family);
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Get App Button - fades out to the right */
+.topbar-btn-get-app {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  opacity: 1;
+  transform: translateX(0);
+  margin-right: var(--spacing-sm);
+  transition: opacity 0.3s ease, transform 0.3s ease, width 0.3s ease, padding 0.3s ease, margin 0.3s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.topbar-btn-get-app:hover {
+  background: var(--color-background-secondary);
+  text-decoration: none;
+}
+
+.topbar-btn-get-app.hidden {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+  margin-right: 0;
+  width: 0;
+  padding: 0;
+  border-width: 0;
+  overflow: hidden;
+}
+
+.topbar-btn-get-app.hidden.scroll-hide {
+  animation: topbarGetAppFadeOutRight 0.35s ease forwards;
+  width: auto;
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-right: var(--spacing-sm);
+  border-width: 1px;
+}
+
+.topbar-btn-get-app.scroll-show {
+  animation: topbarGetAppFadeInLeft 0.4s ease forwards;
+}
+
+/* Pay Now Button - grows when Get App disappears */
+.topbar-btn-pay {
+  background: var(--color-primary);
+  color: white !important;
+  border: none;
+  transition: padding 0.35s ease, box-shadow 0.35s ease, background 0.2s ease;
+}
+
+.topbar-btn-pay:hover {
+  background: var(--color-primary-hover);
+  text-decoration: none;
+  color: white !important;
+}
+
+/* When scrolled, Pay button gets wider and has dropdown */
+.topbar-btn-pay.with-dropdown {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.topbar-arrow-separator {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.3);
+  margin-left: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease, margin-left 0.25s ease;
+}
+
+.topbar-btn-pay.with-dropdown .topbar-arrow-separator {
+  opacity: 1;
+  margin-left: 8px;
+}
+
+.topbar-dropdown-arrow {
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  padding-left: 0;
+  transition: opacity 0.25s ease, width 0.25s ease, margin-left 0.25s ease, transform 0.3s ease;
+  opacity: 0;
+  width: 0;
+  overflow: visible;
+}
+
+.topbar-btn-pay.with-dropdown .topbar-dropdown-arrow {
+  opacity: 1;
+  width: auto;
+  margin-left: 8px;
+}
+
+.topbar-dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.topbar-dropdown-arrow svg {
+  transition: transform 0.3s ease;
+}
+
+.topbar-pay-container {
+  position: relative;
+}
+
+.topbar-pay-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 120px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px var(--color-overlay-dark);
+  padding: var(--spacing-sm);
+  overflow: hidden;
+  z-index: 1200;
+  animation: dropdownFadeIn 0.25s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pay-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm);
+  text-decoration: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.pay-dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  transform: scale(1.02);
+  border-radius: var(--radius-md);
+  transition: 200ms ease;
+}
+
+.pay-dropdown-icon {
+  height: 36px;
+  width: auto;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes topbarGetAppFadeOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+
+@keyframes topbarGetAppFadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes topbarSearchFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes topbarSearchFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 var(--spacing-md);
+  }
+
+  .topbar-left {
+    min-width: auto;
+    gap: var(--spacing-sm);
+  }
+
+  .topbar-logo {
+    height: 20px;
+  }
+
+  .topbar-search-container {
+    display: none;
+  }
+
+  .topbar-right {
+    min-width: auto;
+  }
+
+  .topbar-btn-get-app {
+    display: inline-flex;
+    margin-right: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+  }
+
+  .topbar-btn {
+    font-size: var(--font-size-xs);
+  }
+
+  .topbar-btn-pay.with-dropdown {
+    box-shadow: none;
+  }
+
+  .topbar-pay-dropdown {
+    right: -8px;
+    min-width: 100px;
+  }
+}

@@ -12,7 +12,7 @@
 
 .legal-header {
   position: sticky;
-  top: 0;
+  top: var(--topbar-height, 60px);
   background: linear-gradient(to bottom, var(--color-background) 0%, var(--color-background) 90%, rgba(255, 255, 255, 0) 100%);
   z-index: 100;
   text-align: left;
@@ -370,18 +370,17 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .legal-header {
-    margin-top: 40px;
+    margin-top: 0;
   }
 }
 
 @media (max-width: 768px) {
   .legal-page-container {
     padding: var(--spacing-lg) var(--spacing-md);
-    padding-top: calc(var(--spacing-lg) + 80px);
   }
 
   .legal-header {
-    top: 80px;
+    top: var(--topbar-height, 60px);
     margin-left: 0;
     padding-left: 0;
   }
@@ -452,7 +451,6 @@
 @media (max-width: 480px) {
   .legal-page-container {
     padding: var(--spacing-md) var(--spacing-md);
-    padding-top: calc(var(--spacing-md) + 80px);
   }
 
   .legal-title {
