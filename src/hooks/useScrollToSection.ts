@@ -18,18 +18,27 @@ export const useScrollToSection = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'mobile-app', 'operator-portal'];
+      const trackedSections = ['operator-portal', 'mobile-app'];
       const scrollPosition = window.scrollY + 150; // Offset for better detection
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        const element = document.getElementById(section);
-        
-        if (element && element.offsetTop <= scrollPosition) {
-          setActiveSection(section);
-          break;
+      // Sort sections by their position on the page so we always pick the one furthest down the page that we've reached
+      const orderedSections = trackedSections
+        .map((section) => {
+          const element = document.getElementById(section);
+          return element ? { section, offsetTop: element.offsetTop } : null;
+        })
+        .filter((item): item is { section: string; offsetTop: number } => !!item)
+        .sort((a, b) => a.offsetTop - b.offsetTop);
+
+      let currentSection = 'home';
+
+      orderedSections.forEach(({ section, offsetTop }) => {
+        if (offsetTop <= scrollPosition) {
+          currentSection = section;
         }
-      }
+      });
+
+      setActiveSection(currentSection);
 
       // If we're at the very top, set to home
       if (window.scrollY < 50) {
