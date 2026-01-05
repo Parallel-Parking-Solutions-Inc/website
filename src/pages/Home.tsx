@@ -4,6 +4,7 @@ import LoadingLogo from '../components/LoadingLogo';
 import YoutubeVideoModal from '../components/YoutubeVideoModal';
 import TrustBadges from '../components/TrustBadges';
 import FeatureGrid from '../components/FeatureGrid';
+import Ecosystem from '../components/Ecosystem';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 
 const Home: React.FC = () => {
@@ -147,6 +148,7 @@ const Home: React.FC = () => {
           <section className="home-section home-section-centered" id="ecosystem">
             <h2>One platform. One ecosystem.</h2>
             <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
+            <Ecosystem animateOnVisible={true} />
           </section>
 
           {/* Section 4: Setup */}

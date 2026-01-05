@@ -1,0 +1,354 @@
+/* Ecosystem Component Styles */
+
+/* Main wrapper */
+.ecosystem-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: 380px;
+  margin: auto;
+  overflow: visible;
+  margin-top: -20px;
+}
+
+/* Component nodes container */
+.ecosystem-nodes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Individual node */
+.ecosystem-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: auto;
+}
+
+/* Node images */
+.ecosystem-node-image {
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.01));
+  transition: filter 0.6s ease-out;
+}
+
+/* Specific node image sizes - adjusted based on screenshot */
+.ecosystem-node[data-component="operator"] .ecosystem-node-image {
+  width: 160px;
+  height: auto;
+  max-height: 130px;
+}
+
+.ecosystem-node[data-component="app"] .ecosystem-node-image {
+  width: 70px;
+  height: auto;
+  max-height: 140px;
+}
+
+.ecosystem-node[data-component="backend"] .ecosystem-node-image {
+  width: 160px;
+  height: auto;
+  max-height: 100px;
+}
+
+.ecosystem-node[data-component="camera"] .ecosystem-node-image {
+  width: 85px;
+  height: auto;
+  max-height: 55px;
+  transform: translateY(-20px);
+}
+
+/* Node glow effect when active - reduced intensity, slower fade */
+.ecosystem-node.active .ecosystem-node-image {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.06))
+          drop-shadow(0 0 100px rgba(23, 130, 255, 0.1));
+  transition: filter 0.2s ease-out;
+}
+
+/* Node labels - hidden */
+.ecosystem-node-label {
+  display: block;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 4px 10px;
+  box-shadow: 0 2px 6px rgba(23, 130, 255, 0.03);
+  white-space: nowrap;
+}
+
+.ecosystem-node:hover .ecosystem-node-label,
+.ecosystem-node:focus-visible .ecosystem-node-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* SVG layer for lines */
+.ecosystem-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+}
+
+/* Base line style */
+.ecosystem-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  /* Prevent any inherited transitions */
+  transition: none;
+}
+
+/* Line drawing animation */
+.ecosystem-line-drawing {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  opacity: 1;
+  animation: line-draw var(--draw-duration, 900ms) ease-out forwards;
+}
+
+@keyframes line-draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Line visible state (after drawing completes) */
+.ecosystem-line-visible {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+
+/* Line fading out */
+.ecosystem-line-fading {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  opacity: 1;
+  animation: line-fade-out var(--fade-duration, 400ms) ease-out forwards;
+}
+
+@keyframes line-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Pulse dot - reduced glow */
+.ecosystem-pulse {
+  fill: var(--color-primary);
+  filter: drop-shadow(0 0 4px var(--color-primary))
+          drop-shadow(0 0 8px rgba(23, 130, 255, 0.2));
+}
+
+/* Pulse animation along path - subtler glow */
+.ecosystem-pulse-animated {
+  animation: pulse-glow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% {
+    r: 4;
+    filter: drop-shadow(0 0 3px var(--color-primary))
+            drop-shadow(0 0 6px rgba(23, 130, 255, 0.4));
+  }
+  100% {
+    r: 5;
+    filter: drop-shadow(0 0 5px var(--color-primary))
+            drop-shadow(0 0 10px rgba(23, 130, 255, 0.5));
+  }
+}
+
+/* Data flow labels */
+.ecosystem-labels-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.ecosystem-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(23, 130, 255, 0.15);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* Label appearing */
+.ecosystem-label-visible {
+  animation: label-fade-in 0.15s ease-out forwards;
+}
+
+@keyframes label-fade-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Label fading out */
+.ecosystem-label-fading {
+  animation: label-fade-out 0.4s ease-out forwards;
+}
+
+@keyframes label-fade-out {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+}
+
+/* Ambient connection lines (always visible, subtle) */
+.ecosystem-ambient-line {
+  fill: none;
+  stroke: rgba(23, 130, 255, 0.2);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 900px) {
+  .ecosystem-wrapper {
+    height: 340px;
+  }
+
+  .ecosystem-node[data-component="operator"] .ecosystem-node-image {
+    width: 130px;
+  }
+
+  .ecosystem-node[data-component="app"] .ecosystem-node-image {
+    width: 60px;
+  }
+
+.ecosystem-node[data-component="backend"] .ecosystem-node-image {
+  width: 85px;
+}
+
+  .ecosystem-node[data-component="camera"] .ecosystem-node-image {
+    width: 55px;
+  }
+
+  .ecosystem-label {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 600px) {
+  .ecosystem-wrapper {
+    height: auto;
+    min-height: 480px;
+    padding: var(--spacing-md) 0;
+  }
+
+  .ecosystem-nodes {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xl);
+  }
+
+  .ecosystem-node {
+    position: relative;
+    transform: none;
+    left: auto !important;
+    top: auto !important;
+  }
+
+  /* Reorder for mobile */
+  .ecosystem-node-left { order: 1; }
+  .ecosystem-node-center-top { order: 2; }
+  .ecosystem-node-center-bottom { order: 3; }
+  .ecosystem-node-right { order: 4; }
+
+  .ecosystem-node-image {
+    max-width: 100px !important;
+    max-height: 100px !important;
+  }
+
+  .ecosystem-node[data-component="app"] .ecosystem-node-image {
+    max-height: 140px !important;
+  }
+
+  /* Hide SVG animations on mobile */
+  .ecosystem-svg {
+    display: none;
+  }
+
+  .ecosystem-labels-container {
+    display: none;
+  }
+
+  .ecosystem-node-label {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ecosystem-line,
+  .ecosystem-pulse,
+  .ecosystem-label {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ecosystem-line-drawing {
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+
+  .ecosystem-label-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}

@@ -1,0 +1,239 @@
+{
+  "settings": {
+    "sequenceIntervalMs": 3500,
+    "minSequenceIntervalMs": 2500,
+    "maxSequenceIntervalMs": 4500,
+    "lineDrawDurationMs": 700,
+    "pulseTravelDurationMs": 500,
+    "labelFadeInMs": 150,
+    "labelDisplayMs": 1000,
+    "labelFadeOutMs": 400,
+    "simultaneousActions": true,
+    "randomizeSequences": true
+  },
+
+  "components": {
+    "operator": {
+      "id": "operator",
+      "label": "Operator Portal",
+      "image": "operator.png"
+    },
+    "backend": {
+      "id": "backend",
+      "label": "Backend",
+      "image": "backend.png"
+    },
+    "camera": {
+      "id": "camera",
+      "label": "Camera",
+      "image": "camera.png"
+    },
+    "app": {
+      "id": "app",
+      "label": "Mobile App",
+      "image": "app.png"
+    }
+  },
+
+  "paths": {
+    "camera-backend": {
+      "from": "camera",
+      "to": "backend",
+      "variants": [
+        { "id": "cb-1", "controlPoint": { "x": 0, "y": 0 } }
+      ]
+    },
+    "backend-operator": {
+      "from": "backend",
+      "to": "operator",
+      "variants": [
+        { "id": "bo-1", "controlPoint": { "x": -20, "y": -40 } },
+        { "id": "bo-2", "controlPoint": { "x": -30, "y": 0 } },
+        { "id": "bo-3", "controlPoint": { "x": -20, "y": 40 } }
+      ]
+    },
+    "operator-backend": {
+      "from": "operator",
+      "to": "backend",
+      "variants": [
+        { "id": "ob-1", "controlPoint": { "x": 30, "y": -50 } },
+        { "id": "ob-2", "controlPoint": { "x": 40, "y": 10 } },
+        { "id": "ob-3", "controlPoint": { "x": 30, "y": 50 } }
+      ]
+    },
+    "backend-app": {
+      "from": "backend",
+      "to": "app",
+      "variants": [
+        { "id": "ba-1", "controlPoint": { "x": 20, "y": -40 } },
+        { "id": "ba-2", "controlPoint": { "x": 30, "y": 0 } },
+        { "id": "ba-3", "controlPoint": { "x": 20, "y": 40 } }
+      ]
+    },
+    "app-backend": {
+      "from": "app",
+      "to": "backend",
+      "variants": [
+        { "id": "ab-1", "controlPoint": { "x": -30, "y": -50 } },
+        { "id": "ab-2", "controlPoint": { "x": -40, "y": 10 } },
+        { "id": "ab-3", "controlPoint": { "x": -30, "y": 50 } }
+      ]
+    }
+  },
+
+  "sequences": [
+    {
+      "id": "entry",
+      "name": "ALPR Entry",
+      "weight": 10,
+      "steps": [
+        { "path": "camera-backend", "label": "vehicle entered", "delayMs": 0 },
+        { "path": "backend-app", "label": "session started", "delayMs": 600 },
+        { "path": "backend-operator", "label": "occupancy +1", "delayMs": 500 }
+      ]
+    },
+    {
+      "id": "exit",
+      "name": "ALPR Exit",
+      "weight": 10,
+      "steps": [
+        { "path": "camera-backend", "label": "vehicle exited", "delayMs": 0 },
+        { "path": "backend-app", "label": "session ended", "delayMs": 600 },
+        { "path": "backend-operator", "label": "occupancy -1", "delayMs": 500 }
+      ]
+    },
+    {
+      "id": "exit",
+      "name": "Manual Exit",
+      "weight": 4,
+      "steps": [
+        { "path": "app-backend", "label": "session ended", "delayMs": 0 },
+        { "path": "backend-operator", "label": "occupancy -1", "delayMs": 400 }
+      ]
+    },
+    {
+      "id": "payment",
+      "name": "Payment Flow",
+      "weight": 4,
+      "steps": [
+        { "path": "app-backend", "label": "payment received", "delayMs": 0 },
+        { "path": "backend-operator", "label": "revenue updated", "delayMs": 500 }
+      ]
+    },
+    {
+      "id": "violation",
+      "name": "Violation Detection",
+      "weight": 1,
+      "steps": [
+        { "path": "backend-operator", "label": "violation added", "delayMs": 0 },
+        { "path": "backend-app", "label": "warn user", "delayMs": 600 },
+        { "path": "backend-operator", "label": "enforcement alert", "delayMs": 600 }
+      ]
+    },
+    {
+      "id": "plate-fail",
+      "name": "Plate Fail",
+      "weight": 1,
+      "steps": [
+        { "path": "camera-backend", "label": "unidentified car", "delayMs": 0 },
+        { "path": "backend-operator", "label": "occupancy +1", "delayMs": 400 },
+        { "path": "backend-operator", "label": "enforcement alert", "delayMs": 700 }
+      ]
+    },
+    {
+      "id": "lot-search",
+      "name": "Lot Search",
+      "weight": 4,
+      "steps": [
+        { "path": "app-backend", "label": "lot searched", "delayMs": 0 },
+        { "path": "backend-app", "label": "live occupancy", "delayMs": 500 }
+      ]
+    },
+    {
+      "id": "pricing-update",
+      "name": "Pricing Update",
+      "weight": 2,
+      "steps": [
+        { "path": "operator-backend", "label": "pricing updated", "delayMs": 0 },
+        { "path": "backend-app", "label": "rates refreshed", "delayMs": 400 }
+      ]
+    },
+    {
+      "id": "analytics-ai",
+      "name": "Analytics AI",
+      "weight": 1,
+      "steps": [
+        { "path": "backend-operator", "label": "AI prediction", "delayMs": 0 }
+      ]
+    },
+    {
+      "id": "analytics-download",
+      "name": "Analytics download",
+      "weight": 2,
+      "steps": [
+        { "path": "operator-backend", "label": "download analytics", "delayMs": 0 },
+        { "path": "backend-operator", "label": "data sent", "delayMs": 500 }
+      ]
+    },
+    {
+      "id": "autopay",
+      "name": "autopay",
+      "weight": 3,
+      "steps": [
+        { "path": "camera-backend", "label": "vehicle exited", "delayMs": 0 },
+        { "path": "backend-app", "label": "session complete", "delayMs": 500 },
+        { "path": "app-backend", "label": "auto pay enabled", "delayMs": 900 },
+        { "path": "backend-app", "label": "payment processed", "delayMs": 1300 },
+        { "path": "backend-operator", "label": "occupancy -1", "delayMs": 1600 }
+      ]
+    },
+    {
+      "id": "full-exit-payment",
+      "name": "Full Exit + Payment",
+      "weight": 4,
+      "steps": [
+        { "path": "camera-backend", "label": "vehicle exited", "delayMs": 0 },
+        { "path": "backend-app", "label": "session complete", "delayMs": 400 },
+        { "path": "backend-operator", "label": "occupancy -1", "delayMs": 600 },
+        { "path": "app-backend", "label": "payment sent", "delayMs": 1000 },
+        { "path": "backend-operator", "label": "revenue updated", "delayMs": 1400 }
+      ]
+    },
+    {
+      "id": "permit-add",
+      "name": "Permit Added",
+      "weight": 1,
+      "steps": [
+        { "path": "operator-backend", "label": "permit added", "delayMs": 0 }
+      ]
+    },
+    {
+      "id": "user-login",
+      "name": "User Login",
+      "weight": 2,
+      "steps": [
+        { "path": "app-backend", "label": "user signup", "delayMs": 0 }
+      ]
+    },
+    {
+      "id": "permit-validation",
+      "name": "Permit Validation",
+      "weight": 2,
+      "steps": [
+        { "path": "camera-backend", "label": "vehicle entered", "delayMs": 0 },
+        { "path": "backend-operator", "label": "permit validated", "delayMs": 500 },
+        { "path": "backend-operator", "label": "user notified", "delayMs": 700 }
+      ]
+    },
+    {
+      "id": "permit-fail",
+      "name": "Permit fail",
+      "weight": 4,
+      "steps": [
+        { "path": "camera-backend", "label": "vehicle entered", "delayMs": 0 },
+        { "path": "backend-operator", "label": "not on registry", "delayMs": 500 },
+        { "path": "backend-operator", "label": "user warned", "delayMs": 700 }
+      ]
+    }
+  ]
+}
