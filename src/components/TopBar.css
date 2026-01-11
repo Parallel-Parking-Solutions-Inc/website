@@ -14,6 +14,10 @@
   transition: background var(--transition-normal), box-shadow var(--transition-normal);
 }
 
+.topbar:not(.scrolled) {
+  background: transparent;
+}
+
 .topbar.scrolled {
   background: rgba(255, 255, 255, 1.0);
 }

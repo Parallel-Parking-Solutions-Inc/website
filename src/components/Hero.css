@@ -1,0 +1,458 @@
+/* Hero Container - Full viewport, scrolls with page */
+.hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+/* Wrapper in Home.tsx - positioned to break out of all containers */
+#hero {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  /* Position at absolute left edge of viewport */
+  margin-left: calc(-200px - var(--spacing-lg) - ((100vw - 200px - 1100px) / 2));
+  margin-top: calc(-1 * var(--topbar-height) - var(--spacing-xl));
+}
+
+/* When sidebar is collapsed, adjust margin */
+.sidebar-collapsed #hero,
+.main-content.sidebar-collapsed #hero {
+  margin-left: calc(-1 * var(--spacing-lg) - ((100vw - 1100px) / 2));
+}
+
+/* Video Layer */
+.hero__video-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Text Overlay - shown during intro and complete */
+.hero__text-overlay {
+  position: absolute;
+  top: calc(var(--topbar-height) + var(--spacing-2xl));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 var(--spacing-lg);
+  transition: opacity 0.5s ease;
+}
+
+.hero__text-overlay--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero__heading {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-shadow:
+    0 0 40px rgba(255, 255, 255, 0.9),
+    0 0 80px rgba(255, 255, 255, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-md);
+}
+
+.hero__description {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  text-shadow:
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 60px rgba(255, 255, 255, 0.5);
+}
+
+/* Blur Overlay */
+.hero__blur-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.hero__blur-overlay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero__blur-overlay--fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Question Section */
+.hero__question {
+  text-align: center;
+  padding: var(--spacing-xl);
+  max-width: 700px;
+}
+
+.hero__question-text {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xl);
+}
+
+.hero__question-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+.hero__question-btn {
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: white;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  animation: hero-btn-entrance 0.4s ease backwards;
+}
+
+.hero__question-btn:nth-child(1) { animation-delay: 0.1s; }
+.hero__question-btn:nth-child(2) { animation-delay: 0.15s; }
+.hero__question-btn:nth-child(3) { animation-delay: 0.2s; }
+.hero__question-btn:nth-child(4) { animation-delay: 0.25s; }
+.hero__question-btn:nth-child(5) { animation-delay: 0.3s; }
+
+.hero__question-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(23, 130, 255, 0.15);
+}
+
+.hero__question-btn:active {
+  transform: translateY(0);
+}
+
+/* Device Mockups Container */
+.hero__devices {
+  position: absolute;
+  bottom: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-2xl);
+  pointer-events: none;
+}
+
+/* Individual Device */
+.hero__device {
+  position: relative;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.6s ease;
+}
+
+.hero__device--raised {
+  transform: translateY(10%);
+  opacity: 1;
+}
+
+.hero__device--lowering {
+  transform: translateY(120%);
+  opacity: 0;
+}
+
+/* iPad Sizing - Very large */
+.hero__device--ipad {
+  width: 900px;
+}
+
+/* iPhone Sizing - Very large */
+.hero__device--iphone {
+  width: 360px;
+}
+
+/* Device Frame (the PNG image) */
+.hero__device-frame {
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+/* Device Screen Container - positions video inside frame */
+.hero__device-screen {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  background: #000;
+}
+
+/* iPad screen positioning - adjust based on actual frame image */
+.hero__device--ipad .hero__device-screen {
+  top: 4.5%;
+  left: 5.8%;
+  width: 88.4%;
+  height: 91%;
+  border-radius: 8px;
+}
+
+/* iPhone screen positioning - adjust based on actual frame image */
+.hero__device--iphone .hero__device-screen {
+  top: 2%;
+  left: 5.5%;
+  width: 89%;
+  height: 96%;
+  border-radius: 28px;
+}
+
+/* Video inside device screen */
+.hero__device-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Typewriter Section */
+.hero__typewriter {
+  text-align: center;
+  padding: var(--spacing-xl);
+  max-width: 900px;
+  animation: hero-fade-in 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+
+.hero__typewriter--fading {
+  opacity: 0;
+}
+
+.hero__typewriter-text {
+  font-family: var(--font-family);
+  font-size: var(--font-size-4xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.hero__typewriter-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: var(--color-primary);
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  animation: hero-cursor-blink 1s infinite;
+}
+
+/* Park Again - directly on video, no blur background */
+.hero__park-again {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: hero-fade-in 0.5s ease;
+}
+
+.hero__park-again-btn {
+  background: var(--color-primary);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-2xl);
+  border-radius: var(--radius-full);
+  border: none;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 20px rgba(23, 130, 255, 0.3);
+}
+
+.hero__park-again-btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(23, 130, 255, 0.4);
+}
+
+.hero__park-again-btn:active {
+  transform: translateY(0);
+}
+
+/* Loading Overlay */
+.hero__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Keyframe Animations */
+@keyframes hero-btn-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-cursor-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .hero__device--ipad {
+    width: 700px;
+  }
+
+  .hero__device--iphone {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero__heading {
+    font-size: var(--font-size-2xl);
+  }
+
+  .hero__description {
+    font-size: var(--font-size-base);
+  }
+
+  .hero__question-text {
+    font-size: var(--font-size-xl);
+  }
+
+  .hero__question-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__question-btn {
+    width: 100%;
+  }
+
+  .hero__devices {
+    gap: var(--spacing-lg);
+  }
+
+  .hero__device--ipad {
+    width: 500px;
+  }
+
+  .hero__device--iphone {
+    width: 220px;
+  }
+
+  .hero__typewriter-text {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__text-overlay {
+    top: calc(var(--topbar-height) + var(--spacing-lg));
+    padding: 0 var(--spacing-md);
+  }
+
+  .hero__heading {
+    font-size: var(--font-size-xl);
+  }
+
+  .hero__description {
+    font-size: var(--font-size-sm);
+  }
+
+  .hero__question {
+    padding: var(--spacing-lg);
+  }
+
+  .hero__question-text {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .hero__device--ipad {
+    width: 350px;
+  }
+
+  .hero__device--iphone {
+    width: 180px;
+  }
+
+  .hero__typewriter-text {
+    font-size: var(--font-size-xl);
+  }
+
+  .hero__park-again-btn {
+    padding: var(--spacing-sm) var(--spacing-xl);
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero__device {
+    transition: none;
+  }
+
+  .hero__blur-overlay {
+    transition: none;
+  }
+
+  .hero__question-btn {
+    animation: none;
+  }
+
+  .hero__typewriter-cursor {
+    animation: none;
+    opacity: 1;
+  }
+}

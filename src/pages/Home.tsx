@@ -6,6 +6,7 @@ import TrustBadges from '../components/TrustBadges';
 import FeatureGrid from '../components/FeatureGrid';
 import Ecosystem from '../components/Ecosystem';
 import Setup from '../components/Setup';
+import Hero from '../components/Hero';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 
 const Home: React.FC = () => {
@@ -134,9 +135,8 @@ const Home: React.FC = () => {
       <div className="home-page-container">
         <div className="home-content">
           {/* Section 1: Hero */}
-          <section className="home-section home-section-centered" id="hero">
-            <h2>Next-gen parking. Stressfree for users. Automated by AI for Operators.</h2>
-            <p>Parallel is beyond the future of parking, but part of the future of saving time, automation and autonomy, and user satistfaction</p>
+          <section id="hero">
+            <Hero />
           </section>
 
           {/* Section 2: Trust Badges */}

@@ -39,10 +39,10 @@ const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) 
   const payDropdownRef = useRef<HTMLDivElement>(null);
   const hasMountedRef = useRef(false);
 
-  // Scroll detection
+  // Scroll detection - transparent when at very top
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      setIsScrolled(window.scrollY > 10);
     };
 
     handleScroll();

@@ -1,0 +1,211 @@
+{
+  "settings": {
+    "typewriterSpeedMs": 40,
+    "typewriterHoldMs": 2000,
+    "blurFadeDurationMs": 500,
+    "deviceRaiseDurationMs": 1000,
+    "deviceLowerDurationMs": 800,
+    "sequenceTransitionMs": 300
+  },
+  "content": {
+    "heroHeading": "Next-gen parking. Stressfree for users. Automated by AI for Operators.",
+    "heroDescription": "Parallel is beyond the future of parking, but part of the future of saving time, automation and autonomy, and user satisfaction",
+    "questionText": "Which of these issues do you face the most?",
+    "parkAgainButtonText": "Park Again"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "label": "Multi-Lot Analytics & Revenue",
+      "finalStatement": "Parallel collects the most relevant parking data across all your lots and makes it easy to digest."
+    },
+    {
+      "id": 2,
+      "label": "Management & Automation",
+      "finalStatement": "Parallel makes running a large parking lot a one person job."
+    },
+    {
+      "id": 3,
+      "label": "Too many products",
+      "finalStatement": "Parallel handles it all, scanning plates, managing data, processing payments."
+    },
+    {
+      "id": 4,
+      "label": "Enforcement & Leakage",
+      "finalStatement": "Parallel see's everything, automates violation tracking cross lots, saving you time and money on enforcement"
+    },
+    {
+      "id": 5,
+      "label": "User Experience & Compliance",
+      "finalStatement": "Parallel is an integrated transparent ecosystem designed to make life easier for you and your customers parking."
+    }
+  ],
+  "sequences": {
+    "1": {
+      "preloadVideos": ["render_1.mp4", "operator_1.mp4"],
+      "steps": [
+        {
+          "type": "background",
+          "action": "play",
+          "src": "render_1.mp4",
+          "start": "immediate",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "raise",
+          "src": "operator_1.mp4",
+          "start": "after_delay",
+          "delay": 3000
+        },
+        {
+          "type": "ipad",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        }
+      ]
+    },
+    "2": {
+      "preloadVideos": ["operator_2.mp4"],
+      "steps": [
+        {
+          "type": "ipad",
+          "action": "raise",
+          "src": "operator_2.mp4",
+          "start": "immediate",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        }
+      ]
+    },
+    "3": {
+      "preloadVideos": ["render_3.mp4", "operator_3.mp4", "app_3.mp4"],
+      "steps": [
+        {
+          "type": "background",
+          "action": "play",
+          "src": "render_3.mp4",
+          "start": "immediate",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "raise",
+          "src": "operator_3.mp4",
+          "start": "with_previous",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "lower",
+          "start": "after_previous",
+          "delay": 0
+        },
+        {
+          "type": "iphone",
+          "action": "raise",
+          "src": "app_3.mp4",
+          "start": "after_previous",
+          "delay": 200
+        },
+        {
+          "type": "iphone",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        }
+      ]
+    },
+    "4": {
+      "preloadVideos": ["render_4.mp4", "operator_4.mp4"],
+      "steps": [
+        {
+          "type": "background",
+          "action": "play",
+          "src": "render_4.mp4",
+          "start": "immediate",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "raise",
+          "src": "operator_4.mp4",
+          "start": "with_previous",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        }
+      ]
+    },
+    "5": {
+      "preloadVideos": ["render_5.mp4", "operator_5.mp4", "app_q5.mp4"],
+      "steps": [
+        {
+          "type": "ipad",
+          "action": "raise",
+          "src": "operator_5.mp4",
+          "start": "immediate",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        },
+        {
+          "type": "ipad",
+          "action": "lower",
+          "start": "after_previous",
+          "delay": 0
+        },
+        {
+          "type": "iphone",
+          "action": "raise",
+          "src": "app_q5.mp4",
+          "start": "after_previous",
+          "delay": 200
+        },
+        {
+          "type": "background",
+          "action": "play",
+          "src": "render_5.mp4",
+          "start": "with_previous",
+          "delay": 0
+        },
+        {
+          "type": "iphone",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        }
+      ]
+    }
+  },
+  "assets": {
+    "basePath": "/assets/hero/",
+    "introVideo": "render_0.mp4",
+    "backgroundVideos": ["render_0.mp4", "render_1.mp4", "render_3.mp4", "render_4.mp4", "render_5.mp4"],
+    "deviceVideos": ["operator_1.mp4", "operator_2.mp4", "operator_3.mp4", "operator_4.mp4", "operator_5.mp4", "app_3.mp4", "app_q5.mp4"],
+    "deviceImages": {
+      "ipad": "ipad.png",
+      "iphone": "iphone.png"
+    }
+  }
+}
