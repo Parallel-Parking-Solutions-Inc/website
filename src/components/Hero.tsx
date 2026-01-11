@@ -23,6 +23,7 @@ interface HeroQuestion {
   id: number;
   label: string;
   finalStatement: string;
+  icon?: string;
 }
 
 interface SequenceStep {
@@ -633,7 +634,15 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
                   className="hero__question-btn"
                   onClick={() => handleQuestionClick(q.id)}
                 >
-                  {q.label}
+                  {q.icon && (
+                    <img
+                      src={`${heroData.assets.basePath}${q.icon}`}
+                      className="hero__question-icon"
+                      alt=""
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span className="hero__question-label">{q.label}</span>
                 </button>
               ))}
             </div>

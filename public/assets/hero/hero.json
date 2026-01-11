@@ -17,27 +17,32 @@
     {
       "id": 1,
       "label": "Multi-Lot Analytics & Revenue",
-      "finalStatement": "Parallel collects the most relevant parking data across all your lots and makes it easy to digest."
+      "finalStatement": "Parallel collects the most relevant parking data across all your lots and makes it easy to digest.",
+      "icon": "analytics_and_revenue.svg"
     },
     {
       "id": 2,
       "label": "Management & Automation",
-      "finalStatement": "Parallel makes running a large parking lot a one person job."
+      "finalStatement": "Parallel makes running a large parking lot a one person job.",
+      "icon": "management_and_automation.svg"
     },
     {
       "id": 3,
       "label": "Too many products",
-      "finalStatement": "Parallel handles it all, scanning plates, managing data, processing payments."
+      "finalStatement": "Parallel handles it all, scanning plates, managing data, processing payments.",
+      "icon": "too_many_products.svg"
     },
     {
       "id": 4,
       "label": "Enforcement & Leakage",
-      "finalStatement": "Parallel see's everything, automates violation tracking cross lots, saving you time and money on enforcement"
+      "finalStatement": "Parallel see's everything, automates violation tracking cross lots, saving you time and money on enforcement",
+      "icon": "enforcement_and_leakage.svg"
     },
     {
       "id": 5,
       "label": "User Experience & Compliance",
-      "finalStatement": "Parallel is an integrated transparent ecosystem designed to make life easier for you and your customers parking."
+      "finalStatement": "Parallel is an integrated transparent ecosystem designed to make life easier for you and your customers parking.",
+      "icon": "user_experience.svg"
     }
   ],
   "sequences": {

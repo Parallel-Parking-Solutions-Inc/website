@@ -141,6 +141,9 @@
   font-weight: 500;
   font-family: var(--font-family);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   transition: all var(--transition-fast);
   animation: hero-btn-entrance 0.4s ease backwards;
 }
@@ -160,6 +163,18 @@
 
 .hero__question-btn:active {
   transform: translateY(0);
+}
+
+.hero__question-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  transition: filter var(--transition-fast);
+}
+
+.hero__question-btn:hover .hero__question-icon {
+  /* Tint icons to primary to match hover text */
+  filter: brightness(0) saturate(100%) invert(45%) sepia(95%) saturate(1466%) hue-rotate(191deg) brightness(96%) contrast(96%);
 }
 
 /* Device Mockups Container */
@@ -228,8 +243,8 @@
 /* iPad screen positioning - adjust based on actual frame image */
 .hero__device--ipad .hero__device-screen {
   top: 4.2%;
-  left: 3.5%;
-  width: 95%;
+  left: 3.8%;
+  width: 93%;
   height: 91.6%;
   border-radius: 10px;
 }
