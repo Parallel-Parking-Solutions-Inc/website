@@ -17,6 +17,8 @@
   /* Position at absolute left edge of viewport */
   margin-left: calc(-200px - var(--spacing-lg) - ((100vw - 200px - 1100px) / 2));
   margin-top: calc(-1 * var(--topbar-height) - var(--spacing-xl));
+  /* Sync with sidebar animation to prevent visual jump */
+  transition: margin-left var(--transition-normal);
 }
 
 /* When sidebar is collapsed, adjust margin */

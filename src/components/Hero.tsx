@@ -80,7 +80,7 @@ interface DeviceState {
   videoSrc: string | null;
 }
 
-const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
+const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   // State
   const [heroData, setHeroData] = useState<HeroData | null>(null);
   const [phase, setPhase] = useState<HeroPhase>('initial');
@@ -756,6 +756,6 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
       )}
     </div>
   );
-};
+});
 
 export default Hero;

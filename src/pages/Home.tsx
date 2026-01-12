@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './Home.css';
 import LoadingLogo from '../components/LoadingLogo';
 import TrustBadges from '../components/TrustBadges';
@@ -18,6 +18,11 @@ const Home: React.FC = () => {
   // videoRef disabled because demo video section is commented out
   const notificationRef = useRef<HTMLDivElement>(null);
   const { scrollToSection } = useScrollToSection();
+
+  // Stable callback for Hero to prevent re-renders when sidebar toggles
+  const handleHeroReady = useCallback(() => {
+    setHeroReady(true);
+  }, []);
 
   useEffect(() => {
     if (heroReady) {
@@ -158,7 +163,7 @@ const Home: React.FC = () => {
         <div className="home-content">
           {/* Section 1: Hero */}
           <section id="hero">
-            <Hero onIntroReady={() => setHeroReady(true)} />
+            <Hero onIntroReady={handleHeroReady} />
           </section>
 
           {/* Section 2: Setup */}
