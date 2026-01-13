@@ -63,6 +63,7 @@ interface HeroData {
 
 interface HeroProps {
   onIntroReady?: () => void;
+  startDeferredPreload?: boolean;
 }
 
 type HeroPhase =
@@ -83,7 +84,7 @@ interface DeviceState {
   videoSrc: string | null;
 }
 
-const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
+const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady, startDeferredPreload = false }) => {
   // State
   const [heroData, setHeroData] = useState<HeroData | null>(null);
   const [phase, setPhase] = useState<HeroPhase>('initial');
@@ -225,18 +226,29 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     await Promise.all(videos.map(v => preloadVideo(v, basePath)));
   }, [preloadVideo]);
 
-  // Preload background videos up front to avoid black flashes on swap
+  // Preload background videos after page loading is complete to avoid blocking initial load
   useEffect(() => {
+    if (!startDeferredPreload || !heroData) return;
+
     const preloadBackgrounds = async () => {
-      if (!heroData) return;
       try {
-        await preloadVideos(heroData.assets.backgroundVideos, heroData.assets.basePath);
+        // Preload background videos (excluding intro which is already loaded)
+        const backgroundsToPreload = heroData.assets.backgroundVideos.filter(
+          v => v !== heroData.assets.introVideo
+        );
+        await preloadVideos(backgroundsToPreload, heroData.assets.basePath);
+
+        // Also preload device videos for smoother sequence playback
+        await preloadVideos(heroData.assets.deviceVideos, heroData.assets.basePath);
       } catch (error) {
         console.error('Failed to preload background videos:', error);
       }
     };
-    preloadBackgrounds();
-  }, [heroData, preloadVideos]);
+
+    // Small delay to let the page render first
+    const timer = setTimeout(preloadBackgrounds, 100);
+    return () => clearTimeout(timer);
+  }, [startDeferredPreload, heroData, preloadVideos]);
 
   // Wait for device video to end
   const waitForDeviceVideoEnd = useCallback((deviceType: 'ipad' | 'iphone'): Promise<void> => {

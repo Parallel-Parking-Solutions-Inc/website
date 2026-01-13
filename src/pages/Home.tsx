@@ -11,12 +11,16 @@ import { useScrollToSection } from '../hooks/useScrollToSection';
 const Home: React.FC = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [heroReady, setHeroReady] = useState(false);
+  const [setupReady, setSetupReady] = useState(false);
+  const [showBypassButton, setShowBypassButton] = useState(false);
+  const [loadingBypassed, setLoadingBypassed] = useState(false);
   // Demo video and tutorial videos are disabled to avoid loading large media assets.
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop');
   // Tutorial thumbnails and arrows are disabled to avoid loading tutorial assets
   const [notificationVisible, setNotificationVisible] = useState(false);
   // videoRef disabled because demo video section is commented out
   const notificationRef = useRef<HTMLDivElement>(null);
+  const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { scrollToSection } = useScrollToSection();
 
   // Stable callback for Hero to prevent re-renders when sidebar toggles
@@ -24,11 +28,52 @@ const Home: React.FC = () => {
     setHeroReady(true);
   }, []);
 
+  // Stable callback for Setup first video ready
+  const handleSetupReady = useCallback(() => {
+    setSetupReady(true);
+  }, []);
+
+  // Handle bypass button click
+  const handleBypassLoading = useCallback(() => {
+    setLoadingBypassed(true);
+  }, []);
+
+  // Remove loading overlay when BOTH videos are ready OR bypass was triggered
   useEffect(() => {
-    if (heroReady) {
+    if ((heroReady && setupReady) || loadingBypassed) {
       setPageLoading(false);
+      // Clear the timeout if loading completed
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
     }
-  }, [heroReady]);
+  }, [heroReady, setupReady, loadingBypassed]);
+
+  // Show bypass button after 10 seconds of loading
+  useEffect(() => {
+    if (pageLoading && !showBypassButton) {
+      loadingTimeoutRef.current = setTimeout(() => {
+        setShowBypassButton(true);
+      }, 10000);
+    }
+
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, [pageLoading, showBypassButton]);
+
+  // Scroll locking while loading overlay is visible
+  useEffect(() => {
+    if (pageLoading) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [pageLoading]);
 
   // Handle navigation from other pages
   useEffect(() => {
@@ -154,23 +199,29 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-page">
-      {(
-        <div className={`page-loading-overlay ${pageLoading ? 'page-loading-overlay--visible' : 'page-loading-overlay--hidden'}`}>
-          <LoadingLogo text="" />
-        </div>
-      )}
+      <div className={`page-loading-overlay ${pageLoading ? 'page-loading-overlay--visible' : 'page-loading-overlay--hidden'}`}>
+        <LoadingLogo text="" />
+        {showBypassButton && !loadingBypassed && (
+          <button
+            className="loading-bypass-btn"
+            onClick={handleBypassLoading}
+          >
+            Loading is taking a while... Want to proceed with less assets?
+          </button>
+        )}
+      </div>
       <div className="home-page-container">
         <div className="home-content">
           {/* Section 1: Hero */}
           <section id="hero">
-            <Hero onIntroReady={handleHeroReady} />
+            <Hero onIntroReady={handleHeroReady} startDeferredPreload={!pageLoading} />
           </section>
 
           {/* Section 2: Setup */}
           <section className="home-section home-section-centered" id="setup">
             <h2>Setup everything. In minutes.</h2>
             <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
-            <Setup />
+            <Setup onFirstVideoReady={handleSetupReady} startDeferredPreload={!pageLoading} />
           </section>
 
           {/* Section 3: Ecosystem (moved after Setup) */}

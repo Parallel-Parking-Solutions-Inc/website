@@ -104,9 +104,10 @@ const TextTyper: React.FC<{ messages: string[] }> = ({ messages }) => {
 
 interface SetupProps {
   onFirstVideoReady?: () => void;
+  startDeferredPreload?: boolean;
 }
 
-const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
+const Setup: React.FC<SetupProps> = ({ onFirstVideoReady, startDeferredPreload = false }) => {
   const [setupData, setSetupData] = useState<SetupData | null>(null);
   const [activeTab, setActiveTab] = useState<string>('');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -208,6 +209,60 @@ const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  // Preload remaining tab videos after page loading is complete
+  useEffect(() => {
+    if (!startDeferredPreload || !setupData) return;
+
+    const preloadRemainingVideos = async () => {
+      // Get all video URLs from setup data
+      const allVideos: string[] = [];
+      Object.keys(setupData.slides).forEach((key) => {
+        const slide = setupData.slides[key];
+        slide.areas.forEach((area) => {
+          if (area.type === 'media' && (area as SetupMediaArea).video) {
+            allVideos.push((area as SetupMediaArea).video as string);
+          }
+        });
+      });
+
+      // Get the first video (already loaded)
+      const firstTabId = setupData.tabs[0]?.id;
+      const firstSlide = firstTabId ? setupData.slides[firstTabId] : null;
+      const firstVideo = firstSlide?.areas.find(
+        (area) => area.type === 'media' && (area as SetupMediaArea).video
+      );
+      const firstVideoSrc = firstVideo ? (firstVideo as SetupMediaArea).video : null;
+
+      // Preload remaining videos (excluding the first one)
+      const videosToPreload = allVideos.filter((v) => v !== firstVideoSrc);
+
+      await Promise.all(
+        videosToPreload.map(
+          (src) =>
+            new Promise<void>((resolve) => {
+              const video = document.createElement('video');
+              video.preload = 'auto';
+              video.muted = true;
+              video.src = src;
+              video.oncanplaythrough = () => {
+                video.remove();
+                resolve();
+              };
+              video.onerror = () => {
+                video.remove();
+                resolve(); // Don't fail the whole preload on single error
+              };
+              video.load();
+            })
+        )
+      );
+    };
+
+    // Small delay to let the page render first
+    const timer = setTimeout(preloadRemainingVideos, 150);
+    return () => clearTimeout(timer);
+  }, [startDeferredPreload, setupData]);
 
   const handleTabClick = (tabId: string) => {
     setUserHasInteracted(true);
@@ -325,7 +380,7 @@ const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
               muted
               loop={userHasInteracted}
               playsInline
-              onLoadedData={handleFirstVideoLoaded}
+              onCanPlayThrough={handleFirstVideoLoaded}
               onError={handleFirstVideoError}
               onEnded={handleVideoEnded}
             >
