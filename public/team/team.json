@@ -79,6 +79,34 @@
           "buttonIcon": "Mail"
         }
       ]
+    },
+    {
+      "id": "arya",
+      "image": "Arya.jpeg",
+      "name": "Arya R Adkoli",
+      "role": "Founding System Architect and Lead Engineer",
+      "description": "Arya architected and built the technical foundation of Parallel Parking Solutions Inc., powering complex parking operations for thousands of users daily.",
+      "buttons": [
+        {
+          "buttonText": "LinkedIn",
+          "buttonLink": "https://www.linkedin.com/in/arya-adkoli/",
+          "buttonIcon": "Linkedin",
+          "textColor": "#ffffff",
+          "buttonColor": "#0077b5"
+        },
+        {
+          "buttonText": "Email",
+          "buttonLink": "mailto:aryaadkoli@gmail.com",
+          "buttonIcon": "Mail"
+        },
+        {
+          "buttonText": "GitHub",
+          "buttonLink": "https://github.com/Aryaadkoli",
+          "buttonIcon": "Github",
+          "textColor": "#ffffff",
+          "buttonColor": "#24292e"
+        }
+      ]
     }
   ]
 }
