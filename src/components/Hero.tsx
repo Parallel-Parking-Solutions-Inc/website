@@ -265,6 +265,36 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   // Delay utility
   const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
+  // Stop and reset any active media playback
+  const stopAllMediaPlayback = useCallback(() => {
+    if (backgroundVideoRef.current) {
+      backgroundVideoRef.current.pause();
+      backgroundVideoRef.current.currentTime = 0;
+    }
+    if (backgroundVideoRef2.current) {
+      backgroundVideoRef2.current.pause();
+      backgroundVideoRef2.current.currentTime = 0;
+      backgroundVideoRef2.current.style.opacity = '0';
+      backgroundVideoRef2.current.style.transition = '';
+    }
+    if (ipadVideoRef.current) {
+      ipadVideoRef.current.pause();
+      ipadVideoRef.current.currentTime = 0;
+      ipadVideoRef.current.src = '';
+    }
+    if (iphoneVideoRef.current) {
+      iphoneVideoRef.current.pause();
+      iphoneVideoRef.current.currentTime = 0;
+      iphoneVideoRef.current.src = '';
+    }
+  }, []);
+
+  // Resolve any pending video end waiters (used when aborting sequences)
+  const resolvePendingVideoEnds = useCallback(() => {
+    videoEndResolvers.current.forEach(resolver => resolver());
+    videoEndResolvers.current.clear();
+  }, []);
+
   // Show commentary text with configurable display time and smooth fade
   const showCommentary = useCallback(async (text: string): Promise<void> => {
     if (!text || !heroData) return;
@@ -293,6 +323,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   const runTypewriter = useCallback(async (text: string, speedMs: number): Promise<void> => {
     setTypewriterText('');
     for (let i = 0; i <= text.length; i++) {
+      if (!isSequenceRunning.current) break;
       setTypewriterText(text.slice(0, i));
       await delay(speedMs);
     }
@@ -300,17 +331,22 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
 
   // Execute a single step
   const executeStep = useCallback(async (step: SequenceStep, basePath: string): Promise<void> => {
+    if (!isSequenceRunning.current) return;
+
     // Respect delays for steps that should wait before starting
     if ((step.start === 'after_delay' || step.start === 'after_previous') && step.delay > 0) {
       await delay(step.delay);
+      if (!isSequenceRunning.current) return;
     }
 
     switch (step.type) {
       case 'background':
         if (step.action === 'play' && step.src) {
+          if (!isSequenceRunning.current) return;
           const videoSrc = `${basePath}${step.src}`;
           // Ensure video is preloaded
           await preloadVideo(step.src, basePath);
+          if (!isSequenceRunning.current) return;
           
           // Get the next video element to load into
           const nextVideoRef = backgroundVideoState.current.activeRef === backgroundVideoRef ? backgroundVideoRef2 : backgroundVideoRef;
@@ -338,12 +374,13 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
               setTimeout(() => resolve(), 500);
             }
           });
+          if (!isSequenceRunning.current) return;
           
           // Play the prepared video
           nextVideo.play().catch(() => {});
           
           // Show commentary if provided
-          if (step.commentary_text) {
+          if (step.commentary_text && isSequenceRunning.current) {
             showCommentary(step.commentary_text);
           }
           
@@ -353,6 +390,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
           
           // Wait for crossfade to complete
           await delay(300);
+          if (!isSequenceRunning.current) return;
           
           // Remove transition for next time
           nextVideo.style.transition = '';
@@ -364,6 +402,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
 
       case 'ipad':
         if (step.action === 'raise' && step.src) {
+          if (!isSequenceRunning.current) return;
           const videoSrc = `${basePath}${step.src}`;
           // Reset to lowered state before raising so the animation always fires
           setIpadState({ visible: true, raised: false, videoSrc });
@@ -372,45 +411,56 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
           });
           // Wait briefly for the lift animation, then start playback
           await delay(heroData?.settings.deviceRaiseDurationMs ? Math.min(heroData.settings.deviceRaiseDurationMs, 250) : 150);
+          if (!isSequenceRunning.current) return;
           if (ipadVideoRef.current) {
             ipadVideoRef.current.currentTime = 0;
             ipadVideoRef.current.play().catch(() => {});
           }
           // Show commentary if provided
-          if (step.commentary_text) {
+          if (step.commentary_text && isSequenceRunning.current) {
             showCommentary(step.commentary_text);
           }
         } else if (step.action === 'lower') {
+          if (!isSequenceRunning.current) return;
           setIpadState(prev => ({ ...prev, raised: false }));
           await delay(heroData?.settings.deviceLowerDurationMs || 400);
+          if (!isSequenceRunning.current) return;
           setIpadState({ visible: false, raised: false, videoSrc: null });
         } else if (step.action === 'video_ended') {
+          if (!isSequenceRunning.current) return;
           await waitForDeviceVideoEnd('ipad');
+          if (!isSequenceRunning.current) return;
         }
         break;
 
       case 'iphone':
         if (step.action === 'raise' && step.src) {
+          if (!isSequenceRunning.current) return;
           const videoSrc = `${basePath}${step.src}`;
           setIphoneState({ visible: true, raised: false, videoSrc });
           requestAnimationFrame(() => {
             setIphoneState(prev => ({ ...prev, raised: true, videoSrc }));
           });
           await delay(heroData?.settings.deviceRaiseDurationMs ? Math.min(heroData.settings.deviceRaiseDurationMs, 250) : 150);
+          if (!isSequenceRunning.current) return;
           if (iphoneVideoRef.current) {
             iphoneVideoRef.current.currentTime = 0;
             iphoneVideoRef.current.play().catch(() => {});
           }
           // Show commentary if provided
-          if (step.commentary_text) {
+          if (step.commentary_text && isSequenceRunning.current) {
             showCommentary(step.commentary_text);
           }
         } else if (step.action === 'lower') {
+          if (!isSequenceRunning.current) return;
           setIphoneState(prev => ({ ...prev, raised: false }));
           await delay(heroData?.settings.deviceLowerDurationMs || 400);
+          if (!isSequenceRunning.current) return;
           setIphoneState({ visible: false, raised: false, videoSrc: null });
         } else if (step.action === 'video_ended') {
+          if (!isSequenceRunning.current) return;
           await waitForDeviceVideoEnd('iphone');
+          if (!isSequenceRunning.current) return;
         }
         break;
     }
@@ -438,10 +488,12 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     } catch (error) {
       console.error('Failed to preload sequence videos:', error);
     }
+    if (!isSequenceRunning.current) return;
 
     // Fade out blur and start sequence
     setPhase('playing_sequence');
     await delay(heroData.settings.blurFadeDurationMs);
+    if (!isSequenceRunning.current) return;
 
     // Track which devices are raised during sequence
     let ipadIsRaised = false;
@@ -449,7 +501,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
 
     // Execute steps
     let i = 0;
-    while (i < sequence.steps.length) {
+    while (i < sequence.steps.length && isSequenceRunning.current) {
       const step = sequence.steps[i];
       const nextStep = sequence.steps[i + 1];
 
@@ -478,8 +530,10 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
         i++;
       }
     }
+    if (!isSequenceRunning.current) return;
 
     // Lower any raised devices BEFORE typewriter
+    if (!isSequenceRunning.current) return;
     setPhase('lowering_devices');
 
     if (ipadIsRaised) {
@@ -492,6 +546,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     // Wait for lower animation
     if (ipadIsRaised || iphoneIsRaised) {
       await delay(heroData.settings.deviceLowerDurationMs + 200);
+      if (!isSequenceRunning.current) return;
     }
 
     // Hide devices completely
@@ -506,12 +561,16 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     setCommentaryVisible(false);
 
     // Show typewriter with blur overlay
+    if (!isSequenceRunning.current) return;
     setPhase('typewriter');
     await delay(300); // Brief pause before typing
+    if (!isSequenceRunning.current) return;
     await runTypewriter(question.finalStatement, heroData.settings.typewriterSpeedMs);
+    if (!isSequenceRunning.current) return;
 
     // Hold for specified duration
     await delay(heroData.settings.typewriterHoldMs);
+    if (!isSequenceRunning.current) return;
 
     // Fade out typewriter/blur
     setPhase('fading_typewriter');
@@ -520,6 +579,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     const introVideoSrc = `${heroData.assets.basePath}${heroData.assets.introVideo}`;
     setCurrentBackgroundSrc(introVideoSrc);
     await delay(50);
+    if (!isSequenceRunning.current) return;
     
     // Reset both video elements
     if (backgroundVideoRef.current) {
@@ -542,6 +602,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
 
     // Wait for fade out
     await delay(heroData.settings.blurFadeDurationMs);
+    if (!isSequenceRunning.current) return;
 
     // Show Park Again on top of video (no blur)
     setPhase('complete');
@@ -561,8 +622,9 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     // Stop sequence
     isSequenceRunning.current = false;
 
-    // Clear video end resolvers
-    videoEndResolvers.current.clear();
+    // Resolve any pending waiters and halt media
+    resolvePendingVideoEnds();
+    stopAllMediaPlayback();
 
     // Clear commentary
     if (commentaryTimeoutRef.current) {
@@ -602,7 +664,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
 
     // Go back to question phase
     setPhase('question');
-  }, [heroData]);
+  }, [heroData, resolvePendingVideoEnds, stopAllMediaPlayback]);
 
   // Handle scroll down to learn more
   const handleScrollToLearnMore = useCallback(() => {
@@ -615,6 +677,10 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   // Reset to initial state (Park Again)
   const handleParkAgain = useCallback(() => {
     if (!heroData) return;
+
+    isSequenceRunning.current = false;
+    resolvePendingVideoEnds();
+    stopAllMediaPlayback();
 
     // Reset all state
     setSelectedQuestion(null);
@@ -648,7 +714,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
 
     // Back to ready state
     setPhase('ready');
-  }, [heroData]);
+  }, [heroData, resolvePendingVideoEnds, stopAllMediaPlayback]);
 
   // Don't render until data is loaded
   if (!heroData) {
@@ -669,6 +735,9 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   const showTypewriter = phase === 'typewriter' || phase === 'fading_typewriter';
   const showParkAgain = phase === 'complete';
   const showReturnToOptions = hasSeenQuestions && (
+    phase === 'initial' ||
+    phase === 'ready' ||
+    phase === 'intro' ||
     phase === 'loading_sequence' ||
     phase === 'playing_sequence' ||
     phase === 'lowering_devices' ||
