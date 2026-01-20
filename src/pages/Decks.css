@@ -331,8 +331,6 @@
   }
 
   .deck-side-panel {
-    position: relative;
-    top: auto;
-    max-height: none;
+    display: none;
   }
 }
