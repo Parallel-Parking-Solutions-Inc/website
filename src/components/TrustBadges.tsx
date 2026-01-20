@@ -52,6 +52,7 @@ const TrustBadges: React.FC<TrustBadgesProps> = ({ onReady }) => {
       }
     };
     loadLogos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -152,7 +153,8 @@ const TrustBadges: React.FC<TrustBadgesProps> = ({ onReady }) => {
         img.removeEventListener('load', onImageLoad);
       });
     };
-  }, [settings.speed, settings.hover_speed, logos.length, onReady]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.speed, settings.hover_speed, logos.length]);
 
   if (isLoading) {
     return null;

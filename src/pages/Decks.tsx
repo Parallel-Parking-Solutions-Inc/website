@@ -237,6 +237,7 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authStatus, numPages, pageNumber]);
 
   const expectedPassword = useMemo(() => {

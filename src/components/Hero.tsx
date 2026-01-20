@@ -95,8 +95,8 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady, startDeferredPrelo
   const [currentBackgroundSrc, setCurrentBackgroundSrc] = useState<string>('');
   const [hasSeenQuestions, setHasSeenQuestions] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [commentaryText, setCommentaryText] = useState('');
-  const [commentaryVisible, setCommentaryVisible] = useState(false);
+  const [, setCommentaryText] = useState('');
+  const [, setCommentaryVisible] = useState(false);
   const commentaryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Refs
