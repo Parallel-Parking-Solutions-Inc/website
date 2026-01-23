@@ -94,6 +94,7 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pageWidth, setPageWidth] = useState(1100);
   const [authStatus, setAuthStatus] = useState<'pending' | 'checking' | 'approved'>('pending');
+  const [prefetchedPdfUrl, setPrefetchedPdfUrl] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const pageRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -109,6 +110,7 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
       setNumPages(null);
       setPageNumber(1);
       setPdfLoading(false);
+      setPrefetchedPdfUrl(null);
       pageRefs.current = {};
       setAuthStatus('pending');
       setPasswordInput('');
@@ -246,6 +248,102 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
     }
     return decodePassword(deck);
   }, [deck]);
+  const normalizedPassword = expectedPassword?.trim().toLowerCase() ?? null;
+  const passwordRequired = normalizedPassword !== 'none';
+  const prefetchFile = useMemo(
+    () => (deck ? prefetchedPdfUrl ?? `/decks/${deck.file}` : null),
+    [deck, prefetchedPdfUrl]
+  );
+
+  useEffect(() => {
+    if (!deck) {
+      setPrefetchedPdfUrl(null);
+      return;
+    }
+
+    const url = `/decks/${deck.file}`;
+    setPrefetchedPdfUrl(null);
+
+    // Hint the browser to start fetching the PDF ASAP
+    const preload = document.createElement('link');
+    preload.rel = 'preload';
+    preload.as = 'fetch';
+    preload.href = url;
+    preload.crossOrigin = 'anonymous';
+    document.head.appendChild(preload);
+
+    let canceled = false;
+    const prefetchPdf = async () => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          return;
+        }
+        const blob = await response.blob();
+        if (canceled) {
+          return;
+        }
+        const objectUrl = URL.createObjectURL(blob);
+        setPrefetchedPdfUrl(objectUrl);
+      } catch {
+        // Ignore prefetch errors; viewer will retry on demand
+      }
+    };
+
+    prefetchPdf();
+
+    return () => {
+      canceled = true;
+      if (preload.parentNode) {
+        preload.parentNode.removeChild(preload);
+      }
+    };
+  }, [deck]);
+
+  useEffect(
+    () => () => {
+      if (prefetchedPdfUrl) {
+        URL.revokeObjectURL(prefetchedPdfUrl);
+      }
+    },
+    [prefetchedPdfUrl]
+  );
+
+  const activateViewer = (url: string) => {
+    setAuthStatus('approved');
+    setPdfUrl(url);
+    setPdfLoading(true);
+    setPageNumber(1);
+    if (onCollapseSidebar && isSidebarCollapsed === false) {
+      onCollapseSidebar(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!deck || authStatus !== 'pending') {
+      return;
+    }
+    if (normalizedPassword !== 'none') {
+      return;
+    }
+
+    const autoUnlock = async () => {
+      setAuthStatus('checking');
+      const url = `/decks/${deck.file}`;
+      const exists = prefetchedPdfUrl ? true : await checkPdfAvailability(url);
+
+      if (!exists) {
+        setAuthStatus('pending');
+        setMessage('Deck file is missing or unavailable.');
+        return;
+      }
+
+      activateViewer(prefetchedPdfUrl ?? url);
+    };
+
+    autoUnlock();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deck, normalizedPassword, prefetchedPdfUrl]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -274,13 +372,7 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
       return;
     }
 
-    setAuthStatus('approved');
-    setPdfUrl(url);
-    setPdfLoading(true);
-    setPageNumber(1);
-    if (onCollapseSidebar && isSidebarCollapsed === false) {
-      onCollapseSidebar(true);
-    }
+    activateViewer(prefetchedPdfUrl ?? url);
   };
 
   const heading = useMemo(() => {
@@ -305,8 +397,11 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
         <div className="deck-header-row">
           <div className="deck-header">
             <h1 className="deck-title">{heading}</h1>
-            {!loading && deck && authStatus !== 'approved' && (
+            {!loading && deck && authStatus !== 'approved' && passwordRequired && (
               <p className="deck-subtitle">Password required to view this deck.</p>
+            )}
+            {!loading && deck && authStatus !== 'approved' && !passwordRequired && (
+              <p className="deck-subtitle">Preparing deck...</p>
             )}
             {loading && <p className="deck-subtitle">Loading deck...</p>}
             {!deck && !loading && <p className="deck-subtitle">No Deck Found</p>}
@@ -319,7 +414,25 @@ const Decks: React.FC<DecksProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
           </div>
         )}
 
-        {!loading && deck && authStatus !== 'approved' && (
+        {!loading && deck && authStatus !== 'approved' && prefetchFile && (
+          <div
+            aria-hidden
+            style={{
+              position: 'absolute',
+              opacity: 0,
+              pointerEvents: 'none',
+              height: 0,
+              width: 0,
+              overflow: 'hidden',
+            }}
+          >
+            <Document file={prefetchFile} loading={null}>
+              <Page pageNumber={1} width={10} renderTextLayer={false} renderAnnotationLayer={false} />
+            </Document>
+          </div>
+        )}
+
+        {!loading && deck && authStatus !== 'approved' && passwordRequired && (
           <form className="deck-password-form" onSubmit={handleSubmit}>
             <label htmlFor="deck-password" className="deck-label">
               Password
