@@ -4,7 +4,7 @@ import './Legal.css';
 const PrivacyPolicy_Operator: React.FC = () => {
     const isOperatorRedirect = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('redirect-from-operator');
 
-    const handleReturnToOperator = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const handleReturnToOperator = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         window.close();
     };
@@ -26,10 +26,10 @@ const PrivacyPolicy_Operator: React.FC = () => {
 
                 <div className="legal-navigation">
                     {isOperatorRedirect && (
-                        <a href="#" className="legal-nav-link" onClick={handleReturnToOperator}>
+                        <button type="button" className="legal-nav-link" onClick={handleReturnToOperator}>
                             Return to Operator
                             <span className="legal-nav-arrow">×</span>
-                        </a>
+                        </button>
                     )}
                     <a href="/legal/operator/terms-of-service" className="legal-nav-link prev">
                         <span className="legal-nav-arrow">←</span>
