@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 import './Sidebar.css';
@@ -95,6 +95,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onCollapsedChange }) => 
   const { activeSection, scrollToSection } = useScrollToSection();
   const [isMobile, setIsMobile] = useState(false);
   const wasMobileRef = useRef<boolean | null>(null);
+  const isOperatorRedirect = useMemo(
+    () => new URLSearchParams(location.search).has('redirect-from-operator'),
+    [location.search]
+  );
 
   // Menu transition state
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -123,6 +127,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onCollapsedChange }) => 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Collapse sidebar when arriving from operator portal link.
+  useEffect(() => {
+    // Only auto-collapse once so manual toggles keep working
+    const hasCollapsed = sessionStorage.getItem('operatorRedirectCollapsed');
+    if (isOperatorRedirect && !isCollapsed && !hasCollapsed) {
+      onCollapsedChange(true);
+      sessionStorage.setItem('operatorRedirectCollapsed', 'true');
+    }
+  }, [isOperatorRedirect, isCollapsed, onCollapsedChange]);
 
   // Handle menu transitions
   useEffect(() => {

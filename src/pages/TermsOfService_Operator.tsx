@@ -2,6 +2,13 @@ import React from 'react';
 import './Legal.css';
 
 const TermsOfService_Operator: React.FC = () => {
+    const isOperatorRedirect = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('redirect-from-operator');
+
+    const handleReturnToOperator = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        window.close();
+    };
+
     return (
         <div className="legal-page-container">
             <div className="legal-header">
@@ -9,20 +16,26 @@ const TermsOfService_Operator: React.FC = () => {
                 <div className="legal-meta">
                     <div className="legal-meta-item">
                         <span className="legal-meta-label">Effective Date:</span>
-                        <span className="legal-meta-value">September 10, 2025</span>
+                        <span className="legal-meta-value">February 1, 2026</span>
                     </div>
                     <div className="legal-meta-item">
                         <span className="legal-meta-label">Last Updated:</span>
-                        <span className="legal-meta-value">September 10, 2025</span>
+                        <span className="legal-meta-value">January 30, 2026</span>
                     </div>
                 </div>
 
                 <div className="legal-navigation">
+                    {isOperatorRedirect && (
+                        <a href="#" className="legal-nav-link" onClick={handleReturnToOperator}>
+                            Return to Operator
+                            <span className="legal-nav-arrow">×</span>
+                        </a>
+                    )}
                     <a href="/legal/operator/privacy-policy" className="legal-nav-link">
                         Operator Privacy Policy
                         <span className="legal-nav-arrow">→</span>
                     </a>
-                    <div></div>
+                    {!isOperatorRedirect && <div></div>}
                 </div>
             </div>
 
@@ -252,13 +265,27 @@ const TermsOfService_Operator: React.FC = () => {
                             By enabling an AI Agent you (a) authorize Parallel to process the relevant lot data in order to craft prompts and payload
                             templates, (b) acknowledge that all confirmations are logged for auditing and abuse prevention, and (c) agree not to use
                             AI tools to circumvent applicable law, parking rules, or these Terms. We may temporarily disable AI access for accounts
-                            that misuse the feature or when additional safeguards are required.
+                            that misuse the feature or when additional safeguards are required. AI tools are optional; if you do not engage with an
+                            agent, no lot data is routed to model providers for that feature.
+                        </p>
+                    </div>
+                </section>
+
+                <section className="legal-section" id="communications">
+                    <h2 className="legal-section-title">13. Communications and Notifications</h2>
+                    <div className="legal-section-content">
+                        <p>
+                            We send only transactional and operational communications related to the Services, such as account verification, security
+                            alerts, billing updates, user activity notices, policy changes, and lot notifications you have enabled. These messages may
+                            be delivered via email or SMS and are necessary to operate the Service; there is no marketing email program. You can manage
+                            lot-level notification preferences in the Operator Portal and update your contact email at any time. Certain security,
+                            billing, and legal notices may be required and cannot be fully opted out of while you maintain an active account.
                         </p>
                     </div>
                 </section>
 
                 <section className="legal-section" id="service-availability">
-                    <h2 className="legal-section-title">13. Service Availability</h2>
+                    <h2 className="legal-section-title">14. Service Availability</h2>
                     <div className="legal-section-content">
                         <p>
                             We strive to maintain the availability, reliability, and performance of the Services. However, Parallel Parking Solutions Inc. does not guarantee uninterrupted or error-free access. The Services may be temporarily suspended or limited due to scheduled maintenance, updates, infrastructure issues, or events beyond our control (such as outages or force majeure events).
@@ -270,7 +297,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="modifications">
-                    <h2 className="legal-section-title">14. Modifications to Terms</h2>
+                    <h2 className="legal-section-title">15. Modifications to Terms</h2>
                     <div className="legal-section-content">
                         <p>
                             We reserve the right to update or modify these Terms at any time, at our sole discretion. If we make material changes, we will notify users by posting the updated Terms on this page and updating the "Effective Date" at the top. We may also notify you via email or in-app messages, where appropriate.
@@ -282,7 +309,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="termination">
-                    <h2 className="legal-section-title">15. Termination</h2>
+                    <h2 className="legal-section-title">16. Termination</h2>
                     <div className="legal-section-content">
                         <p>
                             We may suspend or terminate your access to the Services, including your account, at any time and without prior notice or liability, for any reason, including but not limited to:
@@ -303,7 +330,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="governing-law">
-                    <h2 className="legal-section-title">16. Governing Law</h2>
+                    <h2 className="legal-section-title">17. Governing Law</h2>
                     <div className="legal-section-content">
                         <p>
                             These Terms shall be governed by and construed in accordance with the laws of the Province of Ontario, Canada, and the applicable federal laws of Canada. Where required by applicable jurisdiction, U.S. laws may also apply.
@@ -315,7 +342,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="purchases-payments">
-                    <h2 className="legal-section-title">17. Purchases and Payments</h2>
+                    <h2 className="legal-section-title">18. Purchases and Payments</h2>
                     <div className="legal-section-content">
                         <p>
                             Certain Services may require payment. By submitting payment information, you authorize us to charge applicable fees to your provided payment method. All payments are final and non-refundable unless otherwise required by law.
@@ -330,7 +357,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="disclaimer">
-                    <h2 className="legal-section-title">18. Disclaimer</h2>
+                    <h2 className="legal-section-title">19. Disclaimer</h2>
                     <div className="legal-section-content">
                         <p>
                             The Services are provided on an "as is" and "as available" basis. We disclaim all warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
@@ -340,7 +367,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="contact">
-                    <h2 className="legal-section-title">19. Contact Information</h2>
+                    <h2 className="legal-section-title">20. Contact Information</h2>
                     <div className="legal-section-content">
                         <p>
                             We provide technical support on a best-effort basis during standard business hours. You may reach our support team at <a href="mailto:info@parkwithparallel.com" className="legal-email">info@parkwithparallel.com</a>.

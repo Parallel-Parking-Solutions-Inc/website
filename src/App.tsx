@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import TopBar from './components/TopBar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
@@ -16,51 +16,59 @@ import './App.css';
 import TeamMember from './pages/TeamMember';
 import Decks from './pages/Decks';
 
-function AppComponent() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+const AppShell = () => {
+  const location = useLocation();
+  const isOperatorRedirect = new URLSearchParams(location.search).has('redirect-from-operator');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isOperatorRedirect);
 
   const handleSidebarToggle = () => {
     setIsSidebarCollapsed((prev) => !prev);
   };
 
   return (
-    <Router>
-      <div className="app">
-        <TopBar
-          onSidebarToggle={handleSidebarToggle}
-          isSidebarCollapsed={isSidebarCollapsed}
-        />
-        <Sidebar
-          isCollapsed={isSidebarCollapsed}
-          onCollapsedChange={setIsSidebarCollapsed}
-        />
-        <div className={`main-content ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-          <main className="main-content-inner">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/legal" element={<Legal />} />
-              <Route path="/legal/app/terms-of-service" element={<TermsOfServiceApp />} />
-              <Route path="/legal/app/privacy-policy" element={<PrivacyPolicyApp />} />
-              <Route path="/legal/operator/terms-of-service" element={<TermsOfServiceOperator />} />
-              <Route path="/legal/operator/privacy-policy" element={<PrivacyPolicyOperator />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/team/:id" element={<TeamMember />} />
-              <Route
-                path="/decks/:deckName"
-                element={
-                  <Decks
-                    isSidebarCollapsed={isSidebarCollapsed}
-                    onCollapseSidebar={setIsSidebarCollapsed}
-                  />
-                }
-              />
-            </Routes>
-          </main>
-          <Footer isSidebarCollapsed={isSidebarCollapsed} />
-        </div>
-        <CookieConsent />
+    <div className="app">
+      <TopBar
+        onSidebarToggle={handleSidebarToggle}
+        isSidebarCollapsed={isSidebarCollapsed}
+      />
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        onCollapsedChange={setIsSidebarCollapsed}
+      />
+      <div className={`main-content ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+        <main className="main-content-inner">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/legal" element={<Legal />} />
+            <Route path="/legal/app/terms-of-service" element={<TermsOfServiceApp />} />
+            <Route path="/legal/app/privacy-policy" element={<PrivacyPolicyApp />} />
+            <Route path="/legal/operator/terms-of-service" element={<TermsOfServiceOperator />} />
+            <Route path="/legal/operator/privacy-policy" element={<PrivacyPolicyOperator />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/team/:id" element={<TeamMember />} />
+            <Route
+              path="/decks/:deckName"
+              element={
+                <Decks
+                  isSidebarCollapsed={isSidebarCollapsed}
+                  onCollapseSidebar={setIsSidebarCollapsed}
+                />
+              }
+            />
+          </Routes>
+        </main>
+        <Footer isSidebarCollapsed={isSidebarCollapsed} />
       </div>
+      <CookieConsent />
+    </div>
+  );
+};
+
+function AppComponent() {
+  return (
+    <Router>
+      <AppShell />
     </Router>
   );
 }

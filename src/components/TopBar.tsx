@@ -22,6 +22,10 @@ interface SearchResult {
 const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isOperatorRedirect = useMemo(
+    () => new URLSearchParams(location.search).has('redirect-from-operator'),
+    [location.search]
+  );
 
   // State
   const [isScrolled, setIsScrolled] = useState(false);
@@ -306,61 +310,65 @@ const TopBar: React.FC<TopBarProps> = ({ onSidebarToggle, isSidebarCollapsed }) 
             </div>
           )}
         </div>
-        <a
-          href="https://app.parkwithparallel.com"
-          className={`topbar-btn topbar-btn-get-app ${isScrolled ? 'hidden' : ''} ${scrollPhaseClass}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Get App
-        </a>
+        {!isOperatorRedirect && (
+          <>
+            <a
+              href="https://app.parkwithparallel.com"
+              className={`topbar-btn topbar-btn-get-app ${isScrolled ? 'hidden' : ''} ${scrollPhaseClass}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get App
+            </a>
 
-        <div className="topbar-pay-container" ref={payDropdownRef}>
-          <a
-            href="https://pay.parkwithparallel.com"
-            className={`topbar-btn topbar-btn-pay ${isScrolled ? 'with-dropdown' : ''}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handlePayClick}
-          >
-            Pay Now
-            <span className="topbar-arrow-separator" />
-            <span className={`topbar-dropdown-arrow ${showPayDropdown ? 'open' : ''}`}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </span>
-          </a>
-
-          {isScrolled && showPayDropdown && (
-            <div className="topbar-pay-dropdown">
-              <a
-                href="https://apps.apple.com/app/parallel-parking/id6446042703"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pay-dropdown-item"
-              >
-                <img src="/assets/app_ios_download.svg" alt="Download on iOS" className="pay-dropdown-icon" />
-              </a>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.parallel.parking"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="pay-dropdown-item"
-              >
-                <img src="/assets/app_android_download.svg" alt="Get on Android" className="pay-dropdown-icon" />
-              </a>
+            <div className="topbar-pay-container" ref={payDropdownRef}>
               <a
                 href="https://pay.parkwithparallel.com"
+                className={`topbar-btn topbar-btn-pay ${isScrolled ? 'with-dropdown' : ''}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pay-dropdown-item"
+                onClick={handlePayClick}
               >
-                <img src="/assets/app_web.svg" alt="Pay on Web" className="pay-dropdown-icon" />
+                Pay Now
+                <span className="topbar-arrow-separator" />
+                <span className={`topbar-dropdown-arrow ${showPayDropdown ? 'open' : ''}`}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </span>
               </a>
+
+              {isScrolled && showPayDropdown && (
+                <div className="topbar-pay-dropdown">
+                  <a
+                    href="https://apps.apple.com/app/parallel-parking/id6446042703"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pay-dropdown-item"
+                  >
+                    <img src="/assets/app_ios_download.svg" alt="Download on iOS" className="pay-dropdown-icon" />
+                  </a>
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.parallel.parking"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pay-dropdown-item"
+                  >
+                    <img src="/assets/app_android_download.svg" alt="Get on Android" className="pay-dropdown-icon" />
+                  </a>
+                  <a
+                    href="https://pay.parkwithparallel.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pay-dropdown-item"
+                  >
+                    <img src="/assets/app_web.svg" alt="Pay on Web" className="pay-dropdown-icon" />
+                  </a>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </header>
   );

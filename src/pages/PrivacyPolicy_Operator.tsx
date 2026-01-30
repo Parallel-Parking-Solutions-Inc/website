@@ -2,6 +2,13 @@ import React from 'react';
 import './Legal.css';
 
 const PrivacyPolicy_Operator: React.FC = () => {
+    const isOperatorRedirect = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('redirect-from-operator');
+
+    const handleReturnToOperator = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        window.close();
+    };
+
     return (
         <div className="legal-page-container">
             <div className="legal-header">
@@ -9,20 +16,26 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 <div className="legal-meta">
                     <div className="legal-meta-item">
                         <span className="legal-meta-label">Effective Date:</span>
-                        <span className="legal-meta-value">September 10, 2025</span>
+                        <span className="legal-meta-value">February 1, 2026</span>
                     </div>
                     <div className="legal-meta-item">
                         <span className="legal-meta-label">Last Updated:</span>
-                        <span className="legal-meta-value">September 10, 2025</span>
+                        <span className="legal-meta-value">January 30, 2026</span>
                     </div>
                 </div>
 
                 <div className="legal-navigation">
+                    {isOperatorRedirect && (
+                        <a href="#" className="legal-nav-link" onClick={handleReturnToOperator}>
+                            Return to Operator
+                            <span className="legal-nav-arrow">×</span>
+                        </a>
+                    )}
                     <a href="/legal/operator/terms-of-service" className="legal-nav-link prev">
                         <span className="legal-nav-arrow">←</span>
                         Operator Terms of Service
                     </a>
-                    <div></div>
+                    {!isOperatorRedirect && <div></div>}
                 </div>
             </div>
 
@@ -115,7 +128,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                             <li className="legal-list-item">Managing user accounts and authentication</li>
                             <li className="legal-list-item">Generating analytics and reporting</li>
                             <li className="legal-list-item">Improving Service functionality and user experience</li>
-                            <li className="legal-list-item">Communicating with users about Service updates</li>
+                            <li className="legal-list-item">Communicating with users about Service updates, security alerts, billing, and operational notifications related to their lots</li>
                             <li className="legal-list-item">Ensuring security and preventing fraud</li>
                             <li className="legal-list-item">Complying with legal obligations</li>
                         </ul>
@@ -147,7 +160,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                             We also share session-level data with mobile app users through our integrated system. This includes license plates scanned in operator lots, timestamps, and violation status. App users do not receive any operator-identifying information such as business names, contact details, or internal operational data.
                         </p>
                         <p>
-                            We do not sell, rent, or trade your personal information to any third parties for marketing or advertising purposes. We maintain strict data protection standards and only share information as necessary to deliver the services you've requested.
+                            We do not sell, rent, or trade your personal information to any third parties for marketing or advertising purposes, and we do not operate a marketing email program. Operational emails and lot notifications are transactional; you can manage lot notification settings and your contact email in the Operator Portal.
                         </p>
                     </div>
                 </section>
@@ -162,10 +175,11 @@ const PrivacyPolicy_Operator: React.FC = () => {
                             is never applied without an operator’s confirmation, and all payloads are stored in accordance with this Privacy Policy.
                         </p>
                         <p>
-                            We do not sell AI-generated content or the associated telemetry to third parties. However, we may use anonymized and
-                            aggregated statistics to evaluate performance, measure quality, and design new safeguards. You may disable AI functionality
-                            for a lot at any time by contacting Parallel support; doing so will stop new conversations from being routed through AI, but
-                            historical confirmations may continue to be retained for compliance and security purposes.
+                            We do not sell AI-generated content or the associated telemetry to third parties, and no lot data is sent to model
+                            providers for AI features unless you choose to use them. We may use anonymized and aggregated statistics to evaluate
+                            performance, measure quality, and design new safeguards. You may disable AI functionality for a lot at any time by
+                            contacting Parallel support; doing so will stop new conversations from being routed through AI, but historical
+                            confirmations may continue to be retained for compliance and security purposes.
                         </p>
                     </div>
                 </section>
